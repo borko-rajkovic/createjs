@@ -15,6 +15,10 @@ export default {
     document.head.appendChild(recaptchaScript);
   },
 
+  mounted(){
+    this.init();
+  },
+
   data() {
     return {
       openScore: false,

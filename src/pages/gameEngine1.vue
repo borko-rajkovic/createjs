@@ -25,11 +25,9 @@ export default {
       this.queue = new this.$createjs.LoadQueue()
       this.queue.on("complete", this.handleComplete, this)
       let manifest = this.gameShellManifest.concat([
-        {id: 'option1BgImg', src: 'statics/game/sample/button-sword.png'},
-        {id: 'option2BgImg', src: 'statics/game/sample/button-bow.png'},
-        {id: 'option3BgImg', src: 'statics/game/sample/button-shuricane.png'},
-        {id: 'iconCheck', src: 'statics/game/sample/icon-check.png'},
-        {id: 'iconCross', src: 'statics/game/sample/icon-cross.png'}
+        {id: 'option1BgImg', src: 'statics/game/ninjariver/button1.png'},
+        {id: 'option2BgImg', src: 'statics/game/ninjariver/button2.png'},
+        {id: 'option3BgImg', src: 'statics/game/ninjariver/button3.png'}
       ])
       manifest = manifest.concat(this.getImageFromQuestion())
       this.queue.loadManifest(manifest)

@@ -11,6 +11,10 @@ export default {
   mixins: [GameShellMixin],
   created() {
   },
+    mounted(){
+    this.init();
+  },
+
   data() {
     return {
       openScore: false
