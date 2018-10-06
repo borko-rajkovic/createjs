@@ -18,6 +18,14 @@ export default {
     },
     questions() {
       return [
+                {
+          title: '48-26=?',
+          options: [
+            { value: 18, valueType: 'text', correct: false },
+            { value: 20, valueType: 'text', correct: false },
+            { value: 22, valueType: 'text', correct: true }
+          ]
+        },
         {
           title: 'Which color is red?',
           options: [
@@ -47,14 +55,6 @@ export default {
             { value: 9, valueType: 'text', correct: false },
             { value: 4, valueType: 'text', correct: true },
             { value: 5, valueType: 'text', correct: false }
-          ]
-        },
-        {
-          title: '48-26=?',
-          options: [
-            { value: 18, valueType: 'text', correct: false },
-            { value: 20, valueType: 'text', correct: false },
-            { value: 22, valueType: 'text', correct: true }
           ]
         }
       ];
