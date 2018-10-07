@@ -73,10 +73,10 @@ export default {
         images: [ 
           this.queue.getResult("heroSprites")
           ],
-        frames: { width: 202, height: 180, count: 18 },        
+        frames: { width: 202, height: 180, count: 18 },
         animations: { 
           preJump: [0, 1], 
-          rightJump: [2, 2], 
+          rightJump: [2, 2],
           leftJump: [3, 3],
           midJump: [4, 4],
           postJump: [5, 5],
@@ -95,6 +95,7 @@ export default {
       this.logFloat6 = new this.$createjs.Sprite(logSpriteSheet, "float");
       this.logWithHero = new this.$createjs.Sprite(logSpriteSheet, "withHero");
 
+      this.hero = new this.$createjs.Sprite(heroSpriteSheet, "postJump")
       this.heroPreJump = new this.$createjs.Sprite(heroSpriteSheet, "preJump")
       this.heroRightJump = new this.$createjs.Sprite(heroSpriteSheet, "rightJump")
       this.heroLeftJump = new this.$createjs.Sprite(heroSpriteSheet, "leftJump")
@@ -114,6 +115,7 @@ export default {
       this.logWithHero.setTransform(this.defaultCanvasWidth/3-50, this.defaultCanvasHeight - 90);
 
       this.heroPreJump.setTransform(this.defaultCanvasWidth/3-50, this.defaultCanvasHeight - 120 - 90);
+      this.hero.setTransform(this.defaultCanvasWidth/3-50, this.defaultCanvasHeight - 120 - 90);
       this.heroRightJump.setTransform(300, 300);
       this.heroLeftJump.setTransform(300, 300);
       this.heroMidJump.setTransform(300, 300);
@@ -137,7 +139,8 @@ export default {
         this.logFloat5,
         this.logFloat6,
         this.logWithHero,
-        this.heroPreJump,
+        this.hero
+        // this.heroPreJump,
         // this.heroRightJump,
         // this.heroLeftJump,
         // this.heroMidJump,
@@ -147,6 +150,9 @@ export default {
       );
 
       this.stage.addChild(this.scene)
+
+      this.heroX = this.hero.x;
+      this.heroY = this.hero.y;
 
       this.gameStart()
     },
@@ -197,6 +203,7 @@ export default {
       _container.addEventListener("click", (event) => {
         if (this.gameReady && this.userInteraction) {
           this.userInteraction = false
+          this.jumpToLog(index);
           if (event.target.parent.correct) {
             this.addScore()
           } else {
@@ -207,8 +214,103 @@ export default {
       })
       this.stage.addChild(_container)
     },
+    jumpToLog(index){
+      console.log("Jump to log", index);
+      this.selectedLogIndex = index;
+      switch (index) {
+        case 0:
+          this.heroX = this.logFloat1.x;
+          this.heroY = this.logFloat1.y-130;
+          break;
+        case 1:
+          this.heroX = this.logFloat2.x;
+          this.heroY = this.logFloat2.y-130;
+          break;
+        case 2:
+          this.heroX = this.logFloat3.x;
+          this.heroY = this.logFloat3.y-130;
+          break;
+        default:
+          break;
+      }
+    },
     tick (event) {
       var deltaS = event.delta / 1000
+
+      if (Math.round(this.hero.y) != Math.round(this.heroY)||Math.round(this.hero.x) != Math.round(this.heroX)){
+        let x = this.hero.x;
+        let y = this.hero.y;
+        this.scene.removeChild(this.hero);
+        if (this.selectedLogIndex === 2){
+          this.hero = this.heroMidJump;
+        }
+        else {
+          this.hero = (Math.round(this.hero.x) - Math.round(this.heroX) < 0) ? this.heroRightJump : this.heroLeftJump;
+        }
+        this.hero.x = x;
+        this.hero.y = y;
+        this.scene.addChild(this.hero);
+      }
+      else{
+        let x = this.hero.x;
+        let y = this.hero.y;
+        this.scene.removeChild(this.hero);
+        this.hero = this.heroPostJump;
+        this.hero.x = x;
+        this.hero.y = y;
+        this.scene.addChild(this.hero);
+      }
+
+      if (Math.round(this.hero.x) != Math.round(this.heroX)){
+        if (Math.abs(Math.round(this.heroX) - Math.round(this.hero.x))<10){
+          this.hero.x = this.heroX;
+        }
+        else {
+          this.hero.x = this.hero.x + (Math.round(this.hero.x) > Math.round(this.heroX)?-1:1)*10;
+        }
+      }
+
+      if (Math.round(this.hero.y) != Math.round(this.heroY)){
+        if (Math.abs(Math.round(this.heroY) - Math.round(this.hero.y))<10) {
+          this.hero.y = this.heroY;
+        }
+        else {
+          this.hero.y = this.hero.y + (Math.round(this.hero.y) > Math.round(this.heroY)?-1:1)*10;
+        }
+      }
+
+      let answerBoxText1 = new this.$createjs.Text("18", 'bold ' + (this.defaultCanvasWidth / 30) + 'px Comic Sans MS', '#fff')
+      answerBoxText1.x = this.logFloat1.x + 200 / 2
+      answerBoxText1.y = this.logFloat1.y + 90 / 2 -10
+      answerBoxText1.width = 200
+      answerBoxText1.height = 90
+      answerBoxText1.set({
+        textAlign: "center",
+        textBaseline: "middle"
+      })
+
+      let answerBoxText2 = new this.$createjs.Text("20", 'bold ' + (this.defaultCanvasWidth / 30) + 'px Comic Sans MS', '#fff')
+      answerBoxText2.x = this.logFloat2.x + 200 / 2
+      answerBoxText2.y = this.logFloat2.y + 90 / 2 -10
+      answerBoxText2.width = 200
+      answerBoxText2.height = 90
+      answerBoxText2.set({
+        textAlign: "center",
+        textBaseline: "middle"
+      })
+
+      let answerBoxText3 = new this.$createjs.Text("22", 'bold ' + (this.defaultCanvasWidth / 30) + 'px Comic Sans MS', '#fff')
+      answerBoxText3.x = this.logFloat3.x + 200 / 2
+      answerBoxText3.y = this.logFloat3.y + 90 / 2 -10
+      answerBoxText3.width = 200
+      answerBoxText3.height = 90
+      answerBoxText3.set({
+        textAlign: "center",
+        textBaseline: "middle"
+      })
+
+      this.scene.addChild(answerBoxText1, answerBoxText2, answerBoxText3);
+
       this.stage.update(event)
     },
     showAnswerArea () {
