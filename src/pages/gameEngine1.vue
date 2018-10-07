@@ -103,7 +103,7 @@ export default {
       this.heroPanicMovements = new this.$createjs.Sprite(heroSpriteSheet, "panicMovements")
       this.heroAfterLogSinking = new this.$createjs.Sprite(heroSpriteSheet, "afterLogSinking")
       
-      this.river.setTransform(0, 180, 1.85, 4);
+      this.river.setTransform(0, 170, 2, 4);
 
       this.logFloat1.setTransform(this.defaultCanvasWidth - 700, this.defaultCanvasHeight - 300);
       this.logFloat2.setTransform(200, this.defaultCanvasHeight - 350);
@@ -122,7 +122,13 @@ export default {
       this.heroAfterLogSinking.setTransform(300, 300);      
       this.heroAfterLogSinking.setTransform(300, 300);
 
-      this.stage.addChild(
+      this.scene = new this.$createjs.Container();
+
+      var mask = new this.$createjs.Shape();
+      mask.graphics.f("#f00").dr(0, 170, 1024, 1024);
+      this.scene.mask = mask;
+
+      this.scene.addChild(
         this.river,
         this.logFloat1,
         this.logFloat2,
@@ -139,6 +145,8 @@ export default {
         // this.heroPanicMovements,
         // this.heroAfterLogSinking,
       );
+
+      this.stage.addChild(this.scene)
 
       this.gameStart()
     },
