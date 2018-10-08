@@ -155,6 +155,41 @@ export default {
       this.heroY = this.hero.y;
 
       this.gameStart()
+      this.setAnswerBox()
+
+    },
+    setAnswerBox () {
+      let answerBoxText1 = new this.$createjs.Text(this.getCurrentOption(0).value, 'bold ' + (this.defaultCanvasWidth / 30) + 'px Comic Sans MS', '#fff')
+      answerBoxText1.x = this.logFloat1.x + 200 / 2
+      answerBoxText1.y = this.logFloat1.y + 90 / 2 -10
+      answerBoxText1.width = 200
+      answerBoxText1.height = 90
+      answerBoxText1.set({
+        textAlign: "center",
+        textBaseline: "middle"
+      })
+
+      let answerBoxText2 = new this.$createjs.Text(this.getCurrentOption(1).value, 'bold ' + (this.defaultCanvasWidth / 30) + 'px Comic Sans MS', '#fff')
+      answerBoxText2.x = this.logFloat2.x + 200 / 2
+      answerBoxText2.y = this.logFloat2.y + 90 / 2 -10
+      answerBoxText2.width = 200
+      answerBoxText2.height = 90
+      answerBoxText2.set({
+        textAlign: "center",
+        textBaseline: "middle"
+      })
+
+      let answerBoxText3 = new this.$createjs.Text(this.getCurrentOption(2).value, 'bold ' + (this.defaultCanvasWidth / 30) + 'px Comic Sans MS', '#fff')
+      answerBoxText3.x = this.logFloat3.x + 200 / 2
+      answerBoxText3.y = this.logFloat3.y + 90 / 2 -10
+      answerBoxText3.width = 200
+      answerBoxText3.height = 90
+      answerBoxText3.set({
+        textAlign: "center",
+        textBaseline: "middle"
+      })
+
+      this.scene.addChild(answerBoxText1, answerBoxText2, answerBoxText3);
     },
     createOptionContainer (index, bgImage) {
       this.optionContainers[index] = new this.$createjs.Container()
@@ -278,38 +313,6 @@ export default {
           this.hero.y = this.hero.y + (Math.round(this.hero.y) > Math.round(this.heroY)?-1:1)*10;
         }
       }
-
-      let answerBoxText1 = new this.$createjs.Text("18", 'bold ' + (this.defaultCanvasWidth / 30) + 'px Comic Sans MS', '#fff')
-      answerBoxText1.x = this.logFloat1.x + 200 / 2
-      answerBoxText1.y = this.logFloat1.y + 90 / 2 -10
-      answerBoxText1.width = 200
-      answerBoxText1.height = 90
-      answerBoxText1.set({
-        textAlign: "center",
-        textBaseline: "middle"
-      })
-
-      let answerBoxText2 = new this.$createjs.Text("20", 'bold ' + (this.defaultCanvasWidth / 30) + 'px Comic Sans MS', '#fff')
-      answerBoxText2.x = this.logFloat2.x + 200 / 2
-      answerBoxText2.y = this.logFloat2.y + 90 / 2 -10
-      answerBoxText2.width = 200
-      answerBoxText2.height = 90
-      answerBoxText2.set({
-        textAlign: "center",
-        textBaseline: "middle"
-      })
-
-      let answerBoxText3 = new this.$createjs.Text("22", 'bold ' + (this.defaultCanvasWidth / 30) + 'px Comic Sans MS', '#fff')
-      answerBoxText3.x = this.logFloat3.x + 200 / 2
-      answerBoxText3.y = this.logFloat3.y + 90 / 2 -10
-      answerBoxText3.width = 200
-      answerBoxText3.height = 90
-      answerBoxText3.set({
-        textAlign: "center",
-        textBaseline: "middle"
-      })
-
-      this.scene.addChild(answerBoxText1, answerBoxText2, answerBoxText3);
 
       this.stage.update(event)
     },
