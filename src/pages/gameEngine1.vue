@@ -61,7 +61,7 @@ export default {
         frames: { width: 200, height: 90, count: 32 },
         animations: {
           float: [0, 15],
-          dive: [24, 29, 'withHero'],
+          dive: [24, 29],
           // withHero: [16, 21, "dive"]
           withHero: [16, 21]
         }
@@ -91,6 +91,8 @@ export default {
       this.logFloat5 = new this.$createjs.Sprite(logSpriteSheet, 'float');
       this.logFloat6 = new this.$createjs.Sprite(logSpriteSheet, 'float');
       this.logWithHero = new this.$createjs.Sprite(logSpriteSheet, 'withHero');
+      this.logMain = new this.$createjs.Sprite(logSpriteSheet, 'withHero');
+      this.logDive = new this.$createjs.Sprite(logSpriteSheet, 'dive');
 
       this.hero = new this.$createjs.Sprite(heroSpriteSheet, 'postJump');
       this.heroPreJump = new this.$createjs.Sprite(heroSpriteSheet, 'preJump');
@@ -149,7 +151,6 @@ export default {
       this.heroPostJump.setTransform(300, 300);
       this.heroPanicMovements.setTransform(300, 300);
       this.heroAfterLogSinking.setTransform(300, 300);
-      this.heroAfterLogSinking.setTransform(300, 300);
 
       this.scene = new this.$createjs.Container();
 
@@ -185,49 +186,53 @@ export default {
       this.setAnswerBox();
     },
     setAnswerBox() {
-      let answerBoxText1 = new this.$createjs.Text(
+      this.answerBoxText1 = new this.$createjs.Text(
         this.getCurrentOption(0).value,
         'bold ' + this.defaultCanvasWidth / 30 + 'px Comic Sans MS',
         '#fff'
       );
-      answerBoxText1.x = this.logFloat1.x + 200 / 2;
-      answerBoxText1.y = this.logFloat1.y + 90 / 2 - 10;
-      answerBoxText1.width = 200;
-      answerBoxText1.height = 90;
-      answerBoxText1.set({
+      this.answerBoxText1.x = this.logFloat1.x + 200 / 2;
+      this.answerBoxText1.y = this.logFloat1.y + 90 / 2 - 10;
+      this.answerBoxText1.width = 200;
+      this.answerBoxText1.height = 90;
+      this.answerBoxText1.set({
         textAlign: 'center',
         textBaseline: 'middle'
       });
 
-      let answerBoxText2 = new this.$createjs.Text(
+      this.answerBoxText2 = new this.$createjs.Text(
         this.getCurrentOption(1).value,
         'bold ' + this.defaultCanvasWidth / 30 + 'px Comic Sans MS',
         '#fff'
       );
-      answerBoxText2.x = this.logFloat2.x + 200 / 2;
-      answerBoxText2.y = this.logFloat2.y + 90 / 2 - 10;
-      answerBoxText2.width = 200;
-      answerBoxText2.height = 90;
-      answerBoxText2.set({
+      this.answerBoxText2.x = this.logFloat2.x + 200 / 2;
+      this.answerBoxText2.y = this.logFloat2.y + 90 / 2 - 10;
+      this.answerBoxText2.width = 200;
+      this.answerBoxText2.height = 90;
+      this.answerBoxText2.set({
         textAlign: 'center',
         textBaseline: 'middle'
       });
 
-      let answerBoxText3 = new this.$createjs.Text(
+      this.answerBoxText3 = new this.$createjs.Text(
         this.getCurrentOption(2).value,
         'bold ' + this.defaultCanvasWidth / 30 + 'px Comic Sans MS',
         '#fff'
       );
-      answerBoxText3.x = this.logFloat3.x + 200 / 2;
-      answerBoxText3.y = this.logFloat3.y + 90 / 2 - 10;
-      answerBoxText3.width = 200;
-      answerBoxText3.height = 90;
-      answerBoxText3.set({
+      this.answerBoxText3.x = this.logFloat3.x + 200 / 2;
+      this.answerBoxText3.y = this.logFloat3.y + 90 / 2 - 10;
+      this.answerBoxText3.width = 200;
+      this.answerBoxText3.height = 90;
+      this.answerBoxText3.set({
         textAlign: 'center',
         textBaseline: 'middle'
       });
 
-      this.scene.addChild(answerBoxText1, answerBoxText2, answerBoxText3);
+      this.scene.addChild(
+        this.answerBoxText1,
+        this.answerBoxText2,
+        this.answerBoxText3
+      );
     },
     createOptionContainer(index, bgImage) {
       this.optionContainers[index] = new this.$createjs.Container();
@@ -238,7 +243,16 @@ export default {
         this.setOptionContainer(i);
       }
     },
+    clearAnswerBox() {
+      this.scene.removeChild(
+        this.answerBoxText1,
+        this.answerBoxText2,
+        this.answerBoxText3
+      );
+    },
     setOptionContainer(index) {
+      this.clearAnswerBox();
+      this.setAnswerBox();
       let _container = this.optionContainers[index];
       _container.removeAllChildren();
       let _optionBg = new this.$createjs.Bitmap(
@@ -281,11 +295,12 @@ export default {
       _container.addEventListener('click', event => {
         if (this.gameReady && this.userInteraction) {
           this.userInteraction = false;
-          this.jumpToLog(index);
           if (event.target.parent.correct) {
+            this.jumpToLog(index);
             this.addScore();
           } else {
-            this.deduceLife();
+            if (this.noOfLifeRemained === 1) this.startSinkHero = true;
+            else this.deduceLife();
           }
           this.nextQuestion();
         }
@@ -312,13 +327,78 @@ export default {
           break;
       }
     },
+    animationEndLog(event) {
+      console.log('Log animation end', event);
+      this.scene.removeChild(this.logWithHero);
+      let x = this.hero.x;
+      let y = this.hero.y;
+      this.scene.removeChild(this.hero);
+      this.hero = this.heroAfterLogSinking;
+      this.hero.x = x;
+      this.hero.y = y;
+
+      this.hero.addEventListener('animationend', this.animationEndHero);
+      this.logWithHero.removeEventListener(
+        'animationend',
+        this.animationEndLog
+      );
+
+      this.scene.addChild(this.hero);
+    },
+    animationEndHero(event) {
+      console.log('Hero animation end', event);
+      x = this.logWithHero.x;
+      y = this.logWithHero.y;
+      this.scene.removeChild(this.logWithHero);
+      this.logWithHero = this.logMain;
+      this.logWithHero.x = x;
+      this.logWithHero.y = y;
+      this.scene.addChild(this.logWithHero);
+
+      let x = this.hero.x;
+      let y = this.hero.y;
+      this.scene.removeChild(this.hero);
+      this.hero = this.heroPostJump;
+      this.hero.x = x;
+      this.hero.y = y;
+      this.scene.addChild(this.hero);
+
+      this.hero.removeEventListener('animationend', this.animationEndHero);
+
+      this.deduceLife();
+    },
     tick(event) {
       var deltaS = event.delta / 1000;
+
+      if (this.startSinkHero === true) {
+        console.log('Sink');
+        this.startSinkHero = false;
+        let x = this.hero.x;
+        let y = this.hero.y;
+        this.scene.removeChild(this.hero);
+        this.hero = this.heroPanicMovements;
+        console.log('Hero panic movements');
+        this.hero.x = x;
+        this.hero.y = y;
+        this.scene.addChild(this.hero);
+
+        x = this.logWithHero.x;
+        y = this.logWithHero.y;
+        this.scene.removeChild(this.logWithHero);
+        this.logWithHero = this.logDive;
+        this.logWithHero.x = x;
+        this.logWithHero.y = y;
+
+        this.logWithHero.addEventListener('animationend', this.animationEndLog);
+
+        this.scene.addChild(this.logWithHero);
+      }
 
       if (
         Math.round(this.hero.y) != Math.round(this.heroY) ||
         Math.round(this.hero.x) != Math.round(this.heroX)
       ) {
+        this.heroIsMoving = true;
         let x = this.hero.x;
         let y = this.hero.y;
         this.scene.removeChild(this.hero);
@@ -333,13 +413,16 @@ export default {
         this.hero.x = x;
         this.hero.y = y;
         this.scene.addChild(this.hero);
-      } else {
+      } else if (this.heroIsMoving === true) {
+        this.heroIsMoving = false;
         let x = this.hero.x;
         let y = this.hero.y;
         this.scene.removeChild(this.hero);
         this.hero = this.heroPostJump;
-        this.hero.x = x;
-        this.hero.y = y;
+        this.hero.x = this.defaultCanvasWidth / 3 - 50;
+        this.hero.y = this.defaultCanvasHeight - 120 - 90;
+        this.heroX = this.hero.x;
+        this.heroY = this.hero.y;
         this.scene.addChild(this.hero);
       }
 
