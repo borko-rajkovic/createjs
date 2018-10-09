@@ -5,10 +5,6 @@
 </template>
 
 <script>
-//TODO After the ninja jumps on the log, if the answer is correct, add score and then move the selected log with the ninja together to the original position. Then, three new option logs appear.
-
-//TODO If the answer is wrong, deduce one life (this.deduceLife()). If there is still any life, follow the correct answer path. If there is no life , the ninja falls in the water and the game over.
-
 import GameShellMixin from '../library/mixins/gameShell';
 export default {
   name: 'game-engine1',
@@ -19,7 +15,7 @@ export default {
       noOfOptionContainer: 3,
       iconCheck: null,
       iconCross: null,
-      waitForNext: 2000
+      waitForNext: 200
     };
   },
   methods: {
@@ -66,7 +62,6 @@ export default {
         animations: {
           float: [0, 15],
           dive: [24, 29],
-          // withHero: [16, 21, "dive"]
           withHero: [16, 21]
         }
       });
@@ -95,37 +90,13 @@ export default {
       this.logFloat5 = new this.$createjs.Sprite(logSpriteSheet, 'float');
       this.logFloat6 = new this.$createjs.Sprite(logSpriteSheet, 'float');
       this.logWithHero = new this.$createjs.Sprite(logSpriteSheet, 'withHero');
-      this.logMain = new this.$createjs.Sprite(logSpriteSheet, 'withHero');
-      this.logDive = new this.$createjs.Sprite(logSpriteSheet, 'dive');
 
       this.hero = new this.$createjs.Sprite(heroSpriteSheet, 'preJump');
+
       // Alfred - add function to handle event after animation end
       this.hero.addEventListener('animationend', event => {
         this.handleAnimationEnd();
       });
-
-      this.heroPreJump = new this.$createjs.Sprite(heroSpriteSheet, 'preJump');
-      this.heroRightJump = new this.$createjs.Sprite(
-        heroSpriteSheet,
-        'rightJump'
-      );
-      this.heroLeftJump = new this.$createjs.Sprite(
-        heroSpriteSheet,
-        'leftJump'
-      );
-      this.heroMidJump = new this.$createjs.Sprite(heroSpriteSheet, 'midJump');
-      this.heroPostJump = new this.$createjs.Sprite(
-        heroSpriteSheet,
-        'postJump'
-      );
-      this.heroPanicMovements = new this.$createjs.Sprite(
-        heroSpriteSheet,
-        'panicMovements'
-      );
-      this.heroAfterLogSinking = new this.$createjs.Sprite(
-        heroSpriteSheet,
-        'afterLogSinking'
-      );
 
       this.river.setTransform(0, 170, 2, 4);
 
@@ -145,21 +116,13 @@ export default {
         this.defaultCanvasWidth / 3 - 50,
         this.defaultCanvasHeight - 90
       );
+      this.logXOrigin = this.logWithHero.x;
+      this.logYOrigin = this.logWithHero.y;
 
-      this.heroPreJump.setTransform(
-        this.defaultCanvasWidth / 3 - 50,
-        this.defaultCanvasHeight - 120 - 90
-      );
       this.hero.setTransform(
         this.defaultCanvasWidth / 3 - 50,
         this.defaultCanvasHeight - 120 - 90
       );
-      this.heroRightJump.setTransform(300, 300);
-      this.heroLeftJump.setTransform(300, 300);
-      this.heroMidJump.setTransform(300, 300);
-      this.heroPostJump.setTransform(300, 300);
-      this.heroPanicMovements.setTransform(300, 300);
-      this.heroAfterLogSinking.setTransform(300, 300);
 
       this.scene = new this.$createjs.Container();
 
@@ -177,16 +140,12 @@ export default {
         this.logFloat6,
         this.logWithHero,
         this.hero
-        // this.heroPreJump,
-        // this.heroRightJump,
-        // this.heroLeftJump,
-        // this.heroMidJump,
-        // this.heroPostJump,
-        // this.heroPanicMovements,
-        // this.heroAfterLogSinking,
       );
 
       this.stage.addChild(this.scene);
+
+      this.heroXOrigin = this.hero.x;
+      this.heroYOrigin = this.hero.y;
 
       this.heroX = this.hero.x;
       this.heroY = this.hero.y;
@@ -202,6 +161,10 @@ export default {
         this.hero.currentAnimation === 'rightJump'
       ) {
         this.hero.gotoAndPlay('postJump');
+      }
+      if (this.hero.currentAnimation === 'afterLogSinking') {
+        this.hero.stop();
+        this.deduceLife();
       }
     },
     setAnswerBox() {
@@ -315,12 +278,11 @@ export default {
         if (this.gameReady && this.userInteraction) {
           this.userInteraction = false;
           // Alfred - no matter the answer is correct or not, the ninja would jump to that log
-          this.jumpToLog(index);
+          this.jumpToLog(index, this.noOfLifeRemained <= 1);
           if (event.target.parent.correct) {
             this.addScore();
           } else {
-            if (this.noOfLifeRemained === 1) this.startSinkHero = true;
-            else this.deduceLife();
+            if (this.noOfLifeRemained > 1) this.deduceLife();
           }
           // Alfred - move to next question after animation completed
           // this.nextQuestion();
@@ -328,8 +290,8 @@ export default {
       });
       this.stage.addChild(_container);
     },
-    jumpToLog(index) {
-      console.log('Jump to log', index);
+    jumpToLog(index, gameLost) {
+      console.log('Jump to log', index, gameLost);
       this.selectedLogIndex = index;
       switch (index) {
         case 0:
@@ -337,69 +299,111 @@ export default {
           this.hero.gotoAndPlay('rightJump');
           this.heroX = this.logFloat1.x;
           this.heroY = this.logFloat1.y - 130;
+          this.logSelected = this.logFloat1;
+          this.logSelectedX = this.logFloat1.x;
+          this.logSelectedY = this.logFloat1.y;
           break;
         case 1:
           // Alfred - use gotoAndPlay to change animation
           this.hero.gotoAndPlay('midJump');
           this.heroX = this.logFloat2.x;
           this.heroY = this.logFloat2.y - 130;
+          this.logSelected = this.logFloat2;
+          this.logSelectedX = this.logFloat2.x;
+          this.logSelectedY = this.logFloat2.y;
           break;
         case 2:
           // Alfred - use gotoAndPlay to change animation
           this.hero.gotoAndPlay('leftJump');
           this.heroX = this.logFloat3.x;
           this.heroY = this.logFloat3.y - 130;
+          this.logSelected = this.logFloat3;
+          this.logSelectedX = this.logFloat3.x;
+          this.logSelectedY = this.logFloat3.y;
           break;
         default:
           break;
       }
 
       // Alfred - use Tween to animate hero movement
-      this.$createjs.Tween.get(this.hero).to(
+      let moveToLog = this.$createjs.Tween.get(this.hero).to(
         { x: this.heroX, y: this.heroY },
         500,
         createjs.Ease.circOut
       );
-    },
-    animationEndLog(event) {
-      console.log('Log animation end', event);
-      this.scene.removeChild(this.logWithHero);
-      let x = this.hero.x;
-      let y = this.hero.y;
-      this.scene.removeChild(this.hero);
-      this.hero = this.heroAfterLogSinking;
-      this.hero.x = x;
-      this.hero.y = y;
 
-      this.hero.addEventListener('animationend', this.animationEndHero);
-      this.logWithHero.removeEventListener(
-        'animationend',
-        this.animationEndLog
+      moveToLog.addEventListener('complete', () => {
+        console.log('Complete tween');
+        if (!gameLost) {
+          this.clearAnswerBox();
+          this.heroContinues(index);
+        } else {
+          this.heroDies(index);
+        }
+      });
+    },
+    heroContinues(index) {
+      this.$createjs.Tween.get(this.hero).to(
+        { x: this.heroXOrigin, y: this.heroYOrigin },
+        1500,
+        createjs.Ease.circOut
+      );
+      this.logSelected.gotoAndPlay('withHero');
+      this.$createjs.Tween.get(this.logSelected).to(
+        { x: this.logXOrigin, y: this.logYOrigin },
+        1500,
+        createjs.Ease.circOut
+      );
+      let hideLogWithHero = this.$createjs.Tween.get(this.logWithHero).to(
+        { x: this.logWithHero.x, y: this.logWithHero.y + 1000 },
+        1500,
+        createjs.Ease.circOut
       );
 
-      this.scene.addChild(this.hero);
+      // Borko: switch log on which hero is standing with selected log
+      let temp = this.logWithHero;
+      this.logWithHero = this.logSelected;
+      this.logSelected = temp;
+
+      // Borko: return pointer to correct log
+      switch (index) {
+        case 0:
+          this.logFloat1 = this.logSelected;
+          break;
+        case 1:
+          this.logFloat2 = this.logSelected;
+          break;
+        case 2:
+          this.logFloat3 = this.logSelected;
+          break;
+      }
+
+      const logXOffset = index === 0 ? 5000 : index === 1 ? -5000 : 0;
+
+      this.logSelected.setTransform(logXOffset, -1000);
+
+      this.logSelected.gotoAndPlay('float');
+
+      this.$createjs.Tween.get(this.logSelected).to(
+        { x: this.logSelectedX, y: this.logSelectedY },
+        1500,
+        createjs.Ease.circOut
+      );
+
+      hideLogWithHero.addEventListener('complete', () => {
+        this.hero.gotoAndPlay('preJump');
+        console.log('Finished movement of the hero');
+        this.nextQuestion();
+      });
     },
-    animationEndHero(event) {
-      console.log('Hero animation end', event);
-      x = this.logWithHero.x;
-      y = this.logWithHero.y;
-      this.scene.removeChild(this.logWithHero);
-      this.logWithHero = this.logMain;
-      this.logWithHero.x = x;
-      this.logWithHero.y = y;
-      this.scene.addChild(this.logWithHero);
+    heroDies(index) {
+      this.logSelected.gotoAndPlay('dive');
+      this.hero.gotoAndPlay('panicMovements');
 
-      let x = this.hero.x;
-      let y = this.hero.y;
-      this.scene.removeChild(this.hero);
-      this.hero = this.heroPostJump;
-      this.hero.x = x;
-      this.hero.y = y;
-      this.scene.addChild(this.hero);
-
-      this.hero.removeEventListener('animationend', this.animationEndHero);
-
-      this.deduceLife();
+      this.logSelected.addEventListener('animationend', e => {
+        this.logSelected.stop();
+        this.hero.gotoAndPlay('afterLogSinking');
+      });
     },
     tick(event) {
       var deltaS = event.delta / 1000;
