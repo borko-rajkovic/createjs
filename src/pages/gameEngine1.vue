@@ -5,6 +5,10 @@
 </template>
 
 <script>
+//TODO After the ninja jumps on the log, if the answer is correct, add score and then move the selected log with the ninja together to the original position. Then, three new option logs appear.
+
+//TODO If the answer is wrong, deduce one life (this.deduceLife()). If there is still any life, follow the correct answer path. If there is no life , the ninja falls in the water and the game over.
+
 import GameShellMixin from '../library/mixins/gameShell';
 export default {
   name: 'game-engine1',
