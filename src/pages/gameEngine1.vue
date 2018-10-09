@@ -72,7 +72,7 @@ export default {
         images: [this.queue.getResult('heroSprites')],
         frames: { width: 202, height: 180, count: 18 },
         animations: {
-          preJump: [0, 1],
+          preJump: [0, 1, 'preJump', 0.6],
           rightJump: [2, 2],
           leftJump: [3, 3],
           midJump: [4, 4],
@@ -94,7 +94,12 @@ export default {
       this.logMain = new this.$createjs.Sprite(logSpriteSheet, 'withHero');
       this.logDive = new this.$createjs.Sprite(logSpriteSheet, 'dive');
 
-      this.hero = new this.$createjs.Sprite(heroSpriteSheet, 'postJump');
+      this.hero = new this.$createjs.Sprite(heroSpriteSheet, 'preJump');
+      // Alfred - add function to handle event after animation end
+      this.hero.addEventListener('animationend', event => {
+        this.handleAnimationEnd();
+      });
+
       this.heroPreJump = new this.$createjs.Sprite(heroSpriteSheet, 'preJump');
       this.heroRightJump = new this.$createjs.Sprite(
         heroSpriteSheet,
@@ -184,6 +189,16 @@ export default {
 
       this.gameStart();
       this.setAnswerBox();
+    },
+    handleAnimationEnd() {
+      console.log(this.hero.currentAnimation);
+      if (
+        this.hero.currentAnimation === 'leftJump' ||
+        this.hero.currentAnimation === 'midJump' ||
+        this.hero.currentAnimation === 'rightJump'
+      ) {
+        this.hero.gotoAndPlay('postJump');
+      }
     },
     setAnswerBox() {
       this.answerBoxText1 = new this.$createjs.Text(
@@ -295,14 +310,16 @@ export default {
       _container.addEventListener('click', event => {
         if (this.gameReady && this.userInteraction) {
           this.userInteraction = false;
+          // Alfred - no matter the answer is correct or not, the ninja would jump to that log
+          this.jumpToLog(index);
           if (event.target.parent.correct) {
-            this.jumpToLog(index);
             this.addScore();
           } else {
             if (this.noOfLifeRemained === 1) this.startSinkHero = true;
             else this.deduceLife();
           }
-          this.nextQuestion();
+          // Alfred - move to next question after animation completed
+          // this.nextQuestion();
         }
       });
       this.stage.addChild(_container);
@@ -312,20 +329,33 @@ export default {
       this.selectedLogIndex = index;
       switch (index) {
         case 0:
+          // Alfred - use gotoAndPlay to change animation
+          this.hero.gotoAndPlay('rightJump');
           this.heroX = this.logFloat1.x;
           this.heroY = this.logFloat1.y - 130;
           break;
         case 1:
+          // Alfred - use gotoAndPlay to change animation
+          this.hero.gotoAndPlay('midJump');
           this.heroX = this.logFloat2.x;
           this.heroY = this.logFloat2.y - 130;
           break;
         case 2:
+          // Alfred - use gotoAndPlay to change animation
+          this.hero.gotoAndPlay('leftJump');
           this.heroX = this.logFloat3.x;
           this.heroY = this.logFloat3.y - 130;
           break;
         default:
           break;
       }
+
+      // Alfred - use Tween to animate hero movement
+      this.$createjs.Tween.get(this.hero).to(
+        { x: this.heroX, y: this.heroY },
+        500,
+        createjs.Ease.circOut
+      );
     },
     animationEndLog(event) {
       console.log('Log animation end', event);
@@ -369,82 +399,6 @@ export default {
     },
     tick(event) {
       var deltaS = event.delta / 1000;
-
-      if (this.startSinkHero === true) {
-        console.log('Sink');
-        this.startSinkHero = false;
-        let x = this.hero.x;
-        let y = this.hero.y;
-        this.scene.removeChild(this.hero);
-        this.hero = this.heroPanicMovements;
-        console.log('Hero panic movements');
-        this.hero.x = x;
-        this.hero.y = y;
-        this.scene.addChild(this.hero);
-
-        x = this.logWithHero.x;
-        y = this.logWithHero.y;
-        this.scene.removeChild(this.logWithHero);
-        this.logWithHero = this.logDive;
-        this.logWithHero.x = x;
-        this.logWithHero.y = y;
-
-        this.logWithHero.addEventListener('animationend', this.animationEndLog);
-
-        this.scene.addChild(this.logWithHero);
-      }
-
-      if (
-        Math.round(this.hero.y) != Math.round(this.heroY) ||
-        Math.round(this.hero.x) != Math.round(this.heroX)
-      ) {
-        this.heroIsMoving = true;
-        let x = this.hero.x;
-        let y = this.hero.y;
-        this.scene.removeChild(this.hero);
-        if (this.selectedLogIndex === 2) {
-          this.hero = this.heroMidJump;
-        } else {
-          this.hero =
-            Math.round(this.hero.x) - Math.round(this.heroX) < 0
-              ? this.heroRightJump
-              : this.heroLeftJump;
-        }
-        this.hero.x = x;
-        this.hero.y = y;
-        this.scene.addChild(this.hero);
-      } else if (this.heroIsMoving === true) {
-        this.heroIsMoving = false;
-        let x = this.hero.x;
-        let y = this.hero.y;
-        this.scene.removeChild(this.hero);
-        this.hero = this.heroPostJump;
-        this.hero.x = this.defaultCanvasWidth / 3 - 50;
-        this.hero.y = this.defaultCanvasHeight - 120 - 90;
-        this.heroX = this.hero.x;
-        this.heroY = this.hero.y;
-        this.scene.addChild(this.hero);
-      }
-
-      if (Math.round(this.hero.x) != Math.round(this.heroX)) {
-        if (Math.abs(Math.round(this.heroX) - Math.round(this.hero.x)) < 10) {
-          this.hero.x = this.heroX;
-        } else {
-          this.hero.x =
-            this.hero.x +
-            (Math.round(this.hero.x) > Math.round(this.heroX) ? -1 : 1) * 10;
-        }
-      }
-
-      if (Math.round(this.hero.y) != Math.round(this.heroY)) {
-        if (Math.abs(Math.round(this.heroY) - Math.round(this.hero.y)) < 10) {
-          this.hero.y = this.heroY;
-        } else {
-          this.hero.y =
-            this.hero.y +
-            (Math.round(this.hero.y) > Math.round(this.heroY) ? -1 : 1) * 10;
-        }
-      }
 
       this.stage.update(event);
     },
