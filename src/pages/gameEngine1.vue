@@ -296,7 +296,7 @@ export default {
         if (this.gameReady && this.userInteraction) {
           this.userInteraction = false;
           // Alfred - no matter the answer is correct or not, the ninja would jump to that log
-          this.jumpToLog(index, this.noOfLifeRemained <= 1);
+          this.jumpToLog(index, this.noOfLifeRemained <= 1 && !event.target.parent.correct);
           if (event.target.parent.correct) {
             this.addScore();
           } else {
