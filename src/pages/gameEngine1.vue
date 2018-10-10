@@ -94,6 +94,26 @@ export default {
       this.hero = new this.$createjs.Sprite(heroSpriteSheet, 'preJump');
 
       // Alfred - add function to handle event after animation end
+
+
+      this.scene = new this.$createjs.Container();
+
+      var mask = new this.$createjs.Shape();
+      mask.graphics.f('#f00').dr(0, 170, 1024, 1024);
+      this.scene.mask = mask;
+
+      this.stage.addChild(this.scene);
+
+      this.heroXOrigin = this.hero.x;
+      this.heroYOrigin = this.hero.y;
+
+      this.gameStart();
+      this.setAnswerBox();
+    },
+    // Alfred - Add function to restart
+    restart () {
+      this.scene.removeAllChildren()
+
       this.hero.addEventListener('animationend', event => {
         this.handleAnimationEnd();
       });
@@ -104,6 +124,7 @@ export default {
         this.defaultCanvasWidth - 700,
         this.defaultCanvasHeight - 300
       );
+      
       this.logFloat2.setTransform(200, this.defaultCanvasHeight - 350);
       this.logFloat3.setTransform(
         this.defaultCanvasWidth / 3,
@@ -124,11 +145,13 @@ export default {
         this.defaultCanvasHeight - 120 - 90
       );
 
-      this.scene = new this.$createjs.Container();
-
-      var mask = new this.$createjs.Shape();
-      mask.graphics.f('#f00').dr(0, 170, 1024, 1024);
-      this.scene.mask = mask;
+      this.logFloat1.gotoAndPlay('float')
+      this.logFloat2.gotoAndPlay('float')
+      this.logFloat3.gotoAndPlay('float')
+      this.logFloat4.gotoAndPlay('float')
+      this.logFloat5.gotoAndPlay('float')
+      this.logFloat6.gotoAndPlay('float')
+      this.hero.gotoAndPlay('preJump')
 
       this.scene.addChild(
         this.river,
@@ -142,19 +165,14 @@ export default {
         this.hero
       );
 
-      this.stage.addChild(this.scene);
-
-      this.heroXOrigin = this.hero.x;
-      this.heroYOrigin = this.hero.y;
+      
+      // this.heroXOrigin = this.hero.x;
+      // this.heroYOrigin = this.hero.y;
 
       this.heroX = this.hero.x;
       this.heroY = this.hero.y;
-
-      this.gameStart();
-      this.setAnswerBox();
     },
     handleAnimationEnd() {
-      console.log(this.hero.currentAnimation);
       if (
         this.hero.currentAnimation === 'leftJump' ||
         this.hero.currentAnimation === 'midJump' ||
@@ -411,6 +429,8 @@ export default {
       this.stage.update(event);
     },
     showAnswerArea() {
+      // Alfred - call the restart function when play or replay button is clicked
+      this.restart()
       this.gameReady = true;
       this.userInteraction = true;
       this.setCurrentQuestion();
