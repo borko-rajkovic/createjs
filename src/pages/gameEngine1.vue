@@ -113,7 +113,7 @@ export default {
     // Alfred - Add function to restart
     restart () {
       this.scene.removeAllChildren()
-
+      this.hero.removeAllEventListeners();
       this.hero.addEventListener('animationend', event => {
         this.handleAnimationEnd();
       });
@@ -419,8 +419,10 @@ export default {
       this.hero.gotoAndPlay('panicMovements');
 
       this.logSelected.addEventListener('animationend', e => {
-        this.logSelected.stop();
-        this.hero.gotoAndPlay('afterLogSinking');
+        if (e.name === 'dive'){
+          this.logSelected.stop();
+          this.hero.gotoAndPlay('afterLogSinking');
+        }
       });
     },
     tick(event) {
