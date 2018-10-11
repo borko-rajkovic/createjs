@@ -4,6 +4,10 @@ export default [
     component: () => import('pages/gameSample1')
   },
   {
+    path: '/ninja-jump',
+    component: () => import('pages/ninjaJump')
+  },
+  {
     path: '/game',
     component: () => import('pages/game')
   },

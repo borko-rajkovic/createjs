@@ -14,7 +14,7 @@ export default {
   methods: {
   },
   mounted () {
-    this.$router.push('/game-sample1')
+    this.$router.push('/ninja-jump')
   }
 }
 </script>
