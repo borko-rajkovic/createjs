@@ -1,5 +1,5 @@
 <template>
-  <game-engine1 :noOfLife="noOfLife" :scorePerAnswer="scorePerAnswer" :questions="questions"></game-engine1>
+  <ninja-jump-game-engine :noOfLife="noOfLife" :scorePerAnswer="scorePerAnswer" :questions="questions"></ninja-jump-game-engine>
 </template>
 
 <script>

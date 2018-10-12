@@ -7,7 +7,7 @@
 <script>
 import GameShellMixin from '../library/mixins/gameShell';
 export default {
-  name: 'game-engine1',
+  name: 'ninja-jump-game-engine',
   mixins: [GameShellMixin],
   data() {
     return {
