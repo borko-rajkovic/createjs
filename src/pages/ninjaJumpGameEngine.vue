@@ -416,48 +416,6 @@ export default {
       }
     },
     setAnswerBox() {
-      this.answerBoxText1 = new this.$createjs.Text(
-        this.getCurrentOption(0).value,
-        'bold ' + this.defaultCanvasWidth / 30 + 'px Comic Sans MS',
-        '#fff'
-      );
-      this.answerBoxText1.x = this.logFloat1.x + 200 / 2;
-      this.answerBoxText1.y = this.logFloat1.y + 90 / 2 - 10;
-      this.answerBoxText1.width = 200;
-      this.answerBoxText1.height = 90;
-      this.answerBoxText1.set({
-        textAlign: 'center',
-        textBaseline: 'middle'
-      });
-
-      this.answerBoxText2 = new this.$createjs.Text(
-        this.getCurrentOption(1).value,
-        'bold ' + this.defaultCanvasWidth / 30 + 'px Comic Sans MS',
-        '#fff'
-      );
-      this.answerBoxText2.x = this.logFloat2.x + 200 / 2;
-      this.answerBoxText2.y = this.logFloat2.y + 90 / 2 - 10;
-      this.answerBoxText2.width = 200;
-      this.answerBoxText2.height = 90;
-      this.answerBoxText2.set({
-        textAlign: 'center',
-        textBaseline: 'middle'
-      });
-
-      this.answerBoxText3 = new this.$createjs.Text(
-        this.getCurrentOption(2).value,
-        'bold ' + this.defaultCanvasWidth / 30 + 'px Comic Sans MS',
-        '#fff'
-      );
-      this.answerBoxText3.x = this.logFloat3.x + 200 / 2;
-      this.answerBoxText3.y = this.logFloat3.y + 90 / 2 - 10;
-      this.answerBoxText3.width = 200;
-      this.answerBoxText3.height = 90;
-      this.answerBoxText3.set({
-        textAlign: 'center',
-        textBaseline: 'middle'
-      });
-
       this.answerBoxTextLeft = new this.$createjs.Text(
         this.getCurrentOption(0).value,
         this.defaultCanvasWidth / 30 + 'px Comic Sans MS',
@@ -503,10 +461,7 @@ export default {
       this.scene.addChild(
         this.answerBoxTextLeft,
         this.answerBoxTextMiddle,
-        this.answerBoxTextRight,
-        this.answerBoxText1,
-        this.answerBoxText2,
-        this.answerBoxText3
+        this.answerBoxTextRight
       );
     },
     createOptionContainer(index, bgImage) {
@@ -522,10 +477,7 @@ export default {
       this.scene.removeChild(
         this.answerBoxTextLeft,
         this.answerBoxTextMiddle,
-        this.answerBoxTextRight,
-        this.answerBoxText1,
-        this.answerBoxText2,
-        this.answerBoxText3
+        this.answerBoxTextRight
       );
     },
     setOptionContainer(index) {
