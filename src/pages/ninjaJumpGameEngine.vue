@@ -5,10 +5,8 @@
 </template>
 
 <script>
-// TODO statics/game/ninjajump/ninja.png
-
 // TODO add timer after you finish the game
-// TODO For the sprite images, please resize them to integer value. For example, if the sprite is 3 x 3, the dimension must be multiple of 3. Otherwise, it could not be shown properly.
+// TODO implement animations logic
 
 import GameShellMixin from '../library/mixins/gameShell';
 export default {
