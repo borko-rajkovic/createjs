@@ -116,6 +116,10 @@ export default {
         {
           id: 'answerBox',
           src: 'statics/game/ninjajump/answer-box.png'
+        },
+        {
+          id: 'ninja',
+          src: 'statics/game/ninjajump/ninja.png'
         }
       ]);
       manifest = manifest.concat(this.getImageFromQuestion());
@@ -130,6 +134,21 @@ export default {
       this.createOptionContainer(0, 'option1BgImg');
       this.createOptionContainer(1, 'option2BgImg');
       this.createOptionContainer(2, 'option3BgImg');
+
+      var ninjaSpriteSheet = new this.$createjs.SpriteSheet({
+        framerate: 10,
+        images: [
+          this.queue.getResult('ninja')
+          ],
+        frames: { width: 170, height: 182, count: 21 },
+        animations: {
+          preJump: [0, 0],
+          midJump: [1, 2, "midJump", 0.1],
+          rightJump: [7, 8, "rightJump", 0.1],
+          leftJump: [14, 15, "leftJump", 0.1],
+          postJump: [3, 6, "postJump", 0.1]
+        }
+      });
 
       this.answerBoxSpriteSheet = new this.$createjs.SpriteSheet({
         framerate: 10,
@@ -274,6 +293,7 @@ export default {
       this.logWithHero = new this.$createjs.Sprite(logSpriteSheet, 'withHero');
 
       this.hero = new this.$createjs.Sprite(heroSpriteSheet, 'preJump');
+      this.ninja = new this.$createjs.Sprite(ninjaSpriteSheet, 'preJump');
 
       // Alfred - add function to handle event after animation end
 
@@ -356,6 +376,17 @@ export default {
         this.defaultCanvasHeight - 380
       );
 
+      this.ninja.setTransform(
+        this.defaultCanvasWidth / 3,
+        this.defaultCanvasHeight - 404
+      );
+
+      // this.ninja.gotoAndPlay("preJump");
+      // this.ninja.gotoAndPlay("midJump");
+      // this.ninja.gotoAndPlay("rightJump");
+      // this.ninja.gotoAndPlay("leftJump");
+      // this.ninja.gotoAndPlay("postJump");
+
       this.answerBoxLeft.setTransform(
         this.platformLeft.x + 180 / 2,
         this.defaultCanvasHeight - 600
@@ -381,15 +412,16 @@ export default {
         this.bgTexture,
         this.lava,
         this.bgWall,
-        this.logFloat1,
-        this.logFloat2,
-        this.logFloat3,
-        this.logWithHero,
+        // this.logFloat1,
+        // this.logFloat2,
+        // this.logFloat3,
+        // this.logWithHero,
         this.platformLeft,
         this.platformMiddle,
         this.platformRight,
         this.platformWithHero,
-        this.hero,
+        // this.hero,
+        this.ninja,
         this.answerBoxLeft,
         this.answerBoxMiddle,
         this.answerBoxRight
