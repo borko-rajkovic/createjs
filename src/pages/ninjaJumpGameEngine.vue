@@ -359,7 +359,8 @@ export default {
 
       if (
         this.ninja.currentAnimation === 'postJump' &&
-        this.ninjaShouldContinue === true && this.ninjaIsDead === false
+        this.ninjaShouldContinue === true &&
+        this.ninjaIsDead === false
       ) {
         this.ninjaShouldContinue === false;
 
