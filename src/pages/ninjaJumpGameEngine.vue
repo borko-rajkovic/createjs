@@ -359,13 +359,9 @@ export default {
 
       if (
         this.ninja.currentAnimation === 'postJump' &&
-        this.ninjaShouldContinue === true
+        this.ninjaShouldContinue === true && this.ninjaIsDead === false
       ) {
         this.ninjaShouldContinue === false;
-
-        this.answerBoxLeft.visible = false;
-        this.answerBoxMiddle.visible = false;
-        this.answerBoxRight.visible = false;
 
         this.$createjs.Tween.get(this.ninja).to(
           { x: this.ninjaXOrigin, y: this.ninjaYOrigin },
@@ -513,10 +509,6 @@ export default {
       }
     },
     clearAnswerBox() {
-      // this.answerBoxLeft.visible = false;
-      // this.answerBoxMiddle.visible = false;
-      // this.answerBoxRight.visible = false;
-
       this.scene.removeChild(
         this.answerBoxTextLeft,
         this.answerBoxTextMiddle,
@@ -643,6 +635,10 @@ export default {
       });
     },
     ninjaContinues(index) {
+      this.answerBoxLeft.visible = false;
+      this.answerBoxMiddle.visible = false;
+      this.answerBoxRight.visible = false;
+
       this.ninjaShouldContinue = true;
     },
     ninjaDies(index) {
