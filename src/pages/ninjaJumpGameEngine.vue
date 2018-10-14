@@ -6,7 +6,6 @@
 
 <script>
 // TODO add timer after you finish the game
-// TODO implement animations logic
 
 import GameShellMixin from '../library/mixins/gameShell';
 export default {
@@ -32,9 +31,7 @@ export default {
         { id: 'option1BgImg', src: 'statics/game/ninjajump/button1.png' },
         { id: 'option2BgImg', src: 'statics/game/ninjajump/button2.png' },
         { id: 'option3BgImg', src: 'statics/game/ninjajump/button3.png' },
-        { id: 'logSprites', src: 'statics/game/ninjariver/log.png' },
         { id: 'lavaSprites', src: 'statics/game/ninjajump/lava.png' },
-        { id: 'heroSprites', src: 'statics/game/ninjariver/hero.png' },
         {
           id: 'lavaSprite1',
           src: 'statics/game/ninjajump/lava-separated/lava-01.png'
@@ -153,21 +150,21 @@ export default {
         animations: { show: [0, 0] }
       });
 
-      var platformLeftSpriteSheet = new this.$createjs.SpriteSheet({
+      this.platformLeftSpriteSheet = new this.$createjs.SpriteSheet({
         framerate: 10,
         images: [this.queue.getResult('platformLeft')],
         frames: { width: 296, height: 84 },
         animations: { show: [0, 0] }
       });
 
-      var platformMiddleSpriteSheet = new this.$createjs.SpriteSheet({
+      this.platformMiddleSpriteSheet = new this.$createjs.SpriteSheet({
         framerate: 10,
         images: [this.queue.getResult('platformMiddle')],
         frames: { width: 265, height: 106 },
         animations: { show: [0, 0] }
       });
 
-      var platformRightSpriteSheet = new this.$createjs.SpriteSheet({
+      this.platformRightSpriteSheet = new this.$createjs.SpriteSheet({
         framerate: 10,
         images: [this.queue.getResult('platformRight')],
         frames: { width: 219, height: 86 },
@@ -217,61 +214,24 @@ export default {
         animations: { show: [0, 0] }
       });
 
-      var logSpriteSheet = new this.$createjs.SpriteSheet({
-        framerate: 10,
-        images: [this.queue.getResult('logSprites')],
-        frames: { width: 200, height: 90, count: 32 },
-        animations: {
-          float: [0, 15],
-          dive: [24, 29],
-          withHero: [16, 21]
-        }
-      });
-
-      var logSpriteSheet = new this.$createjs.SpriteSheet({
-        framerate: 10,
-        images: [this.queue.getResult('logSprites')],
-        frames: { width: 200, height: 90, count: 32 },
-        animations: {
-          float: [0, 15],
-          dive: [24, 29],
-          withHero: [16, 21]
-        }
-      });
-
-      var heroSpriteSheet = new this.$createjs.SpriteSheet({
-        framerate: 10,
-        images: [this.queue.getResult('heroSprites')],
-        frames: { width: 202, height: 180, count: 18 },
-        animations: {
-          preJump: [0, 1, 'preJump', 0.6],
-          rightJump: [2, 2],
-          leftJump: [3, 3],
-          midJump: [4, 4],
-          postJump: [5, 5],
-          panicMovements: [6, 11],
-          afterLogSinking: [12, 17]
-        }
-      });
-
       this.lava = new this.$createjs.Sprite(lavaSpriteSheet, 'float');
       this.bgWall = new this.$createjs.Sprite(bgWallSpriteSheet, 'show');
       this.bgTexture = new this.$createjs.Sprite(bgTextureSpriteSheet, 'show');
 
       this.platformLeft = new this.$createjs.Sprite(
-        platformLeftSpriteSheet,
+        this.platformLeftSpriteSheet,
         'platformLeft'
       );
       this.platformMiddle = new this.$createjs.Sprite(
-        platformMiddleSpriteSheet,
+        this.platformMiddleSpriteSheet,
         'platformMiddle'
       );
       this.platformRight = new this.$createjs.Sprite(
-        platformRightSpriteSheet,
+        this.platformRightSpriteSheet,
         'platformRight'
       );
       this.platformWithNinja = new this.$createjs.Sprite(
-        platformRightSpriteSheet,
+        this.platformRightSpriteSheet,
         'platformLeft'
       );
 
@@ -287,11 +247,6 @@ export default {
         this.answerBoxSpriteSheet,
         'show'
       );
-
-      this.logFloat1 = new this.$createjs.Sprite(logSpriteSheet, 'float');
-      this.logFloat2 = new this.$createjs.Sprite(logSpriteSheet, 'float');
-      this.logFloat3 = new this.$createjs.Sprite(logSpriteSheet, 'float');
-      this.logWithHero = new this.$createjs.Sprite(logSpriteSheet, 'withHero');
 
       this.ninja = new this.$createjs.Sprite(ninjaSpriteSheet, 'preJump');
 
@@ -339,25 +294,9 @@ export default {
         this.defaultCanvasHeight - 250
       );
 
-      this.logFloat1.setTransform(
-        this.defaultCanvasWidth - 700,
-        this.defaultCanvasHeight - 300 - 400
-      );
-
-      this.logFloat2.setTransform(200, this.defaultCanvasHeight - 350 - 400);
-      this.logFloat3.setTransform(
-        this.defaultCanvasWidth / 3,
-        this.defaultCanvasHeight - 450 - 400
-      );
-      this.logWithHero.setTransform(
-        this.defaultCanvasWidth / 3 - 50,
-        this.defaultCanvasHeight - 90 - 90 - 400
-      );
       this.lava.setTransform(0, 850);
       this.bgWall.setTransform(0, 0);
       this.bgTexture.setTransform(0, 0);
-      this.logXOrigin = this.logWithHero.x;
-      this.logYOrigin = this.logWithHero.y;
 
       this.ninja.setTransform(
         this.defaultCanvasWidth / 3,
@@ -391,19 +330,12 @@ export default {
         this.defaultCanvasHeight - 600
       );
 
-      this.logFloat1.gotoAndPlay('float');
-      this.logFloat2.gotoAndPlay('float');
-      this.logFloat3.gotoAndPlay('float');
       this.ninja.gotoAndPlay('preJump');
 
       this.scene.addChild(
         this.bgTexture,
         this.lava,
         this.bgWall,
-        // this.logFloat1,
-        // this.logFloat2,
-        // this.logFloat3,
-        // this.logWithHero,
         this.platformLeft,
         this.platformMiddle,
         this.platformRight,
@@ -463,17 +395,46 @@ export default {
         // Borko: return pointer to correct platform
         switch (this.selectedIndex) {
           case 0:
-            this.platformLeft = this.platformSelected;
+            this.platformLeft = new this.$createjs.Sprite(
+              this.platformLeftSpriteSheet,
+              'platformLeft'
+            );
+            this.platformLeft.setTransform(80, this.defaultCanvasHeight - 520);
+            this.platformSelected = this.platformLeft;
             break;
           case 1:
-            this.platformMiddle = this.platformSelected;
+            this.platformMiddle = new this.$createjs.Sprite(
+              this.platformMiddleSpriteSheet,
+              'platformMiddle'
+            );
+
+            this.platformMiddle.setTransform(
+              this.defaultCanvasWidth / 3 - 50,
+              this.defaultCanvasHeight - 700
+            );
+
+            this.platformSelected = this.platformMiddle;
             break;
           case 2:
-            this.platformRight = this.platformSelected;
+            this.platformRight = new this.$createjs.Sprite(
+              this.platformRightSpriteSheet,
+              'platformRight'
+            );
+            this.platformRight.setTransform(
+              this.defaultCanvasWidth - 660,
+              this.defaultCanvasHeight - 520
+            );
+
+            this.platformSelected = this.platformRight;
             break;
         }
 
-        this.platformSelected.setTransform(this.platformSelectedX, -1000);
+        this.platformSelected.setTransform(this.platformSelectedX, -500);
+        this.scene.addChild(
+          this.platformLeft,
+          this.platformMiddle,
+          this.platformRight
+        );
 
         this.$createjs.Tween.get(this.platformSelected).to(
           { x: this.platformSelectedX, y: this.platformSelectedY },
@@ -607,7 +568,6 @@ export default {
       _container.addEventListener('click', event => {
         if (this.gameReady && this.userInteraction) {
           this.userInteraction = false;
-          // Alfred - no matter the answer is correct or not, the ninja would jump to that log
           this.jumpToPlatform(
             index,
             this.noOfLifeRemained <= 1 && !event.target.parent.correct
