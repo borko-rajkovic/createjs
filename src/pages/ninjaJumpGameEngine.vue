@@ -13,8 +13,6 @@ export default {
     return {
       optionContainers: [],
       noOfOptionContainer: 3,
-      iconCheck: null,
-      iconCross: null,
       waitForNext: 0,
       showTimer: true,
       ninjaIsMoving: false
@@ -249,8 +247,6 @@ export default {
 
       this.ninja = new this.$createjs.Sprite(ninjaSpriteSheet, 'preJump');
 
-      // Alfred - add function to handle event after animation end
-
       this.scene = new this.$createjs.Container();
 
       var mask = new this.$createjs.Shape();
@@ -262,7 +258,6 @@ export default {
       this.gameStart();
       this.setAnswerBox();
     },
-    // Alfred - Add function to restart
     restart() {
       this.ninjaIsDead = false;
       this.ninjaIsMoving = false;
@@ -308,12 +303,6 @@ export default {
 
       this.platformXOrigin = this.platformWithNinja.x;
       this.platformYOrigin = this.platformWithNinja.y;
-
-      // this.ninja.gotoAndPlay("preJump");
-      // this.ninja.gotoAndPlay("midJump");
-      // this.ninja.gotoAndPlay("rightJump");
-      // this.ninja.gotoAndPlay("leftJump");
-      // this.ninja.gotoAndPlay("postJump");
 
       this.answerBoxLeft.setTransform(
         this.platformLeft.x + 180 / 2,
@@ -384,7 +373,7 @@ export default {
           createjs.Ease.circOut
         );
 
-        // Borko: switch platform on which ninja is standing with selected platform
+        // Switch platform on which ninja is standing with selected platform
         let temp = this.platformWithNinja;
         this.platformWithNinja = this.platformSelected;
         this.platformSelected = temp;
