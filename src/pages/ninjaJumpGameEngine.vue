@@ -5,6 +5,11 @@
 </template>
 
 <script>
+// TODO statics/game/ninjajump/ninja.png
+
+// TODO add timer after you finish the game
+// TODO For the sprite images, please resize them to integer value. For example, if the sprite is 3 x 3, the dimension must be multiple of 3. Otherwise, it could not be shown properly.
+
 import GameShellMixin from '../library/mixins/gameShell';
 export default {
   name: 'ninja-jump-game-engine',
@@ -15,7 +20,8 @@ export default {
       noOfOptionContainer: 3,
       iconCheck: null,
       iconCross: null,
-      waitForNext: 200
+      waitForNext: 200,
+      showTimer: true
     };
   },
   methods: {
@@ -25,14 +31,91 @@ export default {
       this.queue = new this.$createjs.LoadQueue();
       this.queue.on('complete', this.handleComplete, this);
       let manifest = this.gameShellManifest.concat([
-        { id: 'option1BgImg', src: 'statics/game/ninjariver/button1.png' },
-        { id: 'option2BgImg', src: 'statics/game/ninjariver/button2.png' },
-        { id: 'option3BgImg', src: 'statics/game/ninjariver/button3.png' },
+        { id: 'option1BgImg', src: 'statics/game/ninjajump/button1.png' },
+        { id: 'option2BgImg', src: 'statics/game/ninjajump/button2.png' },
+        { id: 'option3BgImg', src: 'statics/game/ninjajump/button3.png' },
         { id: 'logSprites', src: 'statics/game/ninjariver/log.png' },
+        { id: 'lavaSprites', src: 'statics/game/ninjajump/lava.png' },
         { id: 'heroSprites', src: 'statics/game/ninjariver/hero.png' },
         {
-          id: 'riverSprites',
-          src: 'statics/game/ninjariver/river-sprite-4x4.png'
+          id: 'lavaSprite1',
+          src: 'statics/game/ninjajump/lava-separated/lava-01.png'
+        },
+        {
+          id: 'lavaSprite2',
+          src: 'statics/game/ninjajump/lava-separated/lava-02.png'
+        },
+        {
+          id: 'lavaSprite3',
+          src: 'statics/game/ninjajump/lava-separated/lava-03.png'
+        },
+        {
+          id: 'lavaSprite4',
+          src: 'statics/game/ninjajump/lava-separated/lava-04.png'
+        },
+        {
+          id: 'lavaSprite5',
+          src: 'statics/game/ninjajump/lava-separated/lava-05.png'
+        },
+        {
+          id: 'lavaSprite6',
+          src: 'statics/game/ninjajump/lava-separated/lava-06.png'
+        },
+        {
+          id: 'lavaSprite7',
+          src: 'statics/game/ninjajump/lava-separated/lava-07.png'
+        },
+        {
+          id: 'lavaSprite8',
+          src: 'statics/game/ninjajump/lava-separated/lava-08.png'
+        },
+        {
+          id: 'lavaSprite9',
+          src: 'statics/game/ninjajump/lava-separated/lava-09.png'
+        },
+        {
+          id: 'lavaSprite10',
+          src: 'statics/game/ninjajump/lava-separated/lava-10.png'
+        },
+        {
+          id: 'lavaSprite11',
+          src: 'statics/game/ninjajump/lava-separated/lava-11.png'
+        },
+        {
+          id: 'lavaSprite12',
+          src: 'statics/game/ninjajump/lava-separated/lava-12.png'
+        },
+        {
+          id: 'lavaSprite13',
+          src: 'statics/game/ninjajump/lava-separated/lava-13.png'
+        },
+        {
+          id: 'lavaSprite14',
+          src: 'statics/game/ninjajump/lava-separated/lava-14.png'
+        },
+        {
+          id: 'bgWall',
+          src: 'statics/game/ninjajump/bg-wall.png'
+        },
+        {
+          id: 'bgTexture',
+          src: 'statics/game/ninjajump/bg-texture.png'
+        },
+        {
+          id: 'platformLeft',
+          src: 'statics/game/ninjajump/platform-1.png'
+        },
+        {
+          id: 'platformMiddle',
+          src: 'statics/game/ninjajump/platform-2.png'
+        },
+        {
+          id: 'platformRight',
+          src: 'statics/game/ninjajump/platform-3.png'
+        },
+        {
+          id: 'answerBox',
+          src: 'statics/game/ninjajump/answer-box.png'
         }
       ]);
       manifest = manifest.concat(this.getImageFromQuestion());
@@ -48,11 +131,101 @@ export default {
       this.createOptionContainer(1, 'option2BgImg');
       this.createOptionContainer(2, 'option3BgImg');
 
-      var riverSpriteSheet = new this.$createjs.SpriteSheet({
+      this.answerBoxSpriteSheet = new this.$createjs.SpriteSheet({
         framerate: 10,
-        images: [this.queue.getResult('riverSprites')],
-        frames: { width: 551, height: 238 },
-        animations: { flow: [0, 15] }
+        images: [
+          this.queue.getResult('answerBox')
+          ],
+        frames: { width: 111, height: 70 },
+        animations: { show: [0, 0] }
+      });
+
+      var platformLeftSpriteSheet = new this.$createjs.SpriteSheet({
+        framerate: 10,
+        images: [
+          this.queue.getResult('platformLeft')
+          ],
+        frames: { width: 296, height: 84 },
+        animations: { show: [0, 0] }
+      });
+
+      var platformMiddleSpriteSheet = new this.$createjs.SpriteSheet({
+        framerate: 10,
+        images: [
+          this.queue.getResult('platformMiddle')
+          ],
+        frames: { width: 265, height: 106 },
+        animations: { show: [0, 0] }
+      });
+
+      var platformRightSpriteSheet = new this.$createjs.SpriteSheet({
+        framerate: 10,
+        images: [
+          this.queue.getResult('platformRight')
+          ],
+        frames: { width: 219, height: 86 },
+        animations: { show: [0, 0] }
+      });
+
+      var lavaSingleSpriteSheet = new this.$createjs.SpriteSheet({
+        framerate: 10,
+        images: [
+          this.queue.getResult('lavaSprites'),
+          ],
+        frames: { width: 1022, height: 560, spacing: 1, margin: 1 },
+        animations: { flow: [0, 13] }
+      });
+
+      var lavaSpriteSheet = new this.$createjs.SpriteSheet({
+        framerate: 10,
+        images: [
+          this.queue.getResult('lavaSprite1'),
+          this.queue.getResult('lavaSprite2'),
+          this.queue.getResult('lavaSprite3'),
+          this.queue.getResult('lavaSprite4'),
+          this.queue.getResult('lavaSprite5'),
+          this.queue.getResult('lavaSprite6'),
+          this.queue.getResult('lavaSprite7'),
+          this.queue.getResult('lavaSprite8'),
+          this.queue.getResult('lavaSprite9'),
+          this.queue.getResult('lavaSprite10'),
+          this.queue.getResult('lavaSprite11'),
+          this.queue.getResult('lavaSprite12'),
+          this.queue.getResult('lavaSprite13'),
+          this.queue.getResult('lavaSprite14')
+          ],
+        frames: { width: 1024, height: 560 },
+        animations: { flow: [0, 13] }
+      });
+
+      var bgWallSpriteSheet = new this.$createjs.SpriteSheet({
+        framerate: 10,
+        images: [
+          this.queue.getResult('bgWall'),
+          ],
+        frames: { width: 1024, height: 1668 },
+        animations: { show: [0, 0] }
+      });
+
+
+      var bgTextureSpriteSheet = new this.$createjs.SpriteSheet({
+        framerate: 10,
+        images: [
+          this.queue.getResult("bgTexture")
+          ],
+        frames: { width: 1024, height: 1668 },
+        animations: { show: [0, 0] }
+      });
+
+      var logSpriteSheet = new this.$createjs.SpriteSheet({
+        framerate: 10,
+        images: [this.queue.getResult('logSprites')],
+        frames: { width: 200, height: 90, count: 32 },
+        animations: {
+          float: [0, 15],
+          dive: [24, 29],
+          withHero: [16, 21]
+        }
       });
 
       var logSpriteSheet = new this.$createjs.SpriteSheet({
@@ -81,14 +254,23 @@ export default {
         }
       });
 
-      this.river = new this.$createjs.Sprite(riverSpriteSheet, 'flow');
+      this.lava = new this.$createjs.Sprite(lavaSpriteSheet, 'float');
+      this.bgWall = new this.$createjs.Sprite(bgWallSpriteSheet, 'show');
+      this.bgTexture = new this.$createjs.Sprite(bgTextureSpriteSheet, 'show');
+
+      this.platformLeft = new this.$createjs.Sprite(platformLeftSpriteSheet, 'platformLeft');
+      this.platformMiddle = new this.$createjs.Sprite(platformMiddleSpriteSheet, 'platformMiddle');
+      this.platformRight = new this.$createjs.Sprite(platformRightSpriteSheet, 'platformRight');
+      this.platformWithHero = new this.$createjs.Sprite(platformRightSpriteSheet, 'platformLeft');
+
+
+      this.answerBoxLeft = new this.$createjs.Sprite(this.answerBoxSpriteSheet, 'show');
+      this.answerBoxMiddle = new this.$createjs.Sprite(this.answerBoxSpriteSheet, 'show');
+      this.answerBoxRight = new this.$createjs.Sprite(this.answerBoxSpriteSheet, 'show');
 
       this.logFloat1 = new this.$createjs.Sprite(logSpriteSheet, 'float');
       this.logFloat2 = new this.$createjs.Sprite(logSpriteSheet, 'float');
       this.logFloat3 = new this.$createjs.Sprite(logSpriteSheet, 'float');
-      this.logFloat4 = new this.$createjs.Sprite(logSpriteSheet, 'float');
-      this.logFloat5 = new this.$createjs.Sprite(logSpriteSheet, 'float');
-      this.logFloat6 = new this.$createjs.Sprite(logSpriteSheet, 'float');
       this.logWithHero = new this.$createjs.Sprite(logSpriteSheet, 'withHero');
 
       this.hero = new this.$createjs.Sprite(heroSpriteSheet, 'preJump');
@@ -112,57 +294,105 @@ export default {
     },
     // Alfred - Add function to restart
     restart () {
+      this.startTimer();
       this.scene.removeAllChildren()
       this.hero.removeAllEventListeners();
       this.hero.addEventListener('animationend', event => {
         this.handleAnimationEnd();
       });
 
-      this.river.setTransform(0, 170, 2, 4);
+      this.platformLeft.setTransform(
+        80,
+        this.defaultCanvasHeight - 520
+      );
+
+      this.platformMiddle.setTransform(
+        this.defaultCanvasWidth / 3 - 50,
+        this.defaultCanvasHeight - 700
+      );
+
+      this.platformRight.setTransform(
+        this.defaultCanvasWidth - 660,
+        this.defaultCanvasHeight - 520
+      );
+
+      this.platformWithHero.setTransform(
+        this.defaultCanvasWidth / 3 - 50,
+        this.defaultCanvasHeight - 250
+      );
+
 
       this.logFloat1.setTransform(
         this.defaultCanvasWidth - 700,
-        this.defaultCanvasHeight - 300
+        this.defaultCanvasHeight - 300 - 400
       );
       
-      this.logFloat2.setTransform(200, this.defaultCanvasHeight - 350);
+      this.logFloat2.setTransform(200, this.defaultCanvasHeight - 350 - 400);
       this.logFloat3.setTransform(
         this.defaultCanvasWidth / 3,
-        this.defaultCanvasHeight - 450
+        this.defaultCanvasHeight - 450 - 400
       );
-      this.logFloat4.setTransform(600, this.defaultCanvasHeight - 650);
-      this.logFloat5.setTransform(-50, this.defaultCanvasHeight - 800);
-      this.logFloat6.setTransform(this.defaultCanvasWidth - 500, 150);
       this.logWithHero.setTransform(
         this.defaultCanvasWidth / 3 - 50,
-        this.defaultCanvasHeight - 90
+        this.defaultCanvasHeight - 90 - 90 - 400
+      );
+      this.lava.setTransform(
+        0,
+        850
+      );
+      this.bgWall.setTransform(
+        0,
+        0
+      );
+      this.bgTexture.setTransform(
+        0,
+        0
       );
       this.logXOrigin = this.logWithHero.x;
       this.logYOrigin = this.logWithHero.y;
 
       this.hero.setTransform(
         this.defaultCanvasWidth / 3 - 50,
-        this.defaultCanvasHeight - 120 - 90
+        this.defaultCanvasHeight - 380
       );
+
+      this.answerBoxLeft.setTransform(
+        this.platformLeft.x + 180 / 2,
+        this.defaultCanvasHeight - 600
+      );
+
+      this.answerBoxMiddle.setTransform(
+        this.platformMiddle.x + 140 / 2,
+        this.defaultCanvasHeight - 780
+      );
+
+      this.answerBoxRight.setTransform(
+        this.platformRight.x + 100 / 2,
+        this.defaultCanvasHeight - 600
+      );
+
 
       this.logFloat1.gotoAndPlay('float')
       this.logFloat2.gotoAndPlay('float')
       this.logFloat3.gotoAndPlay('float')
-      this.logFloat4.gotoAndPlay('float')
-      this.logFloat5.gotoAndPlay('float')
-      this.logFloat6.gotoAndPlay('float')
       this.hero.gotoAndPlay('preJump')
 
       this.scene.addChild(
-        this.river,
+        this.bgTexture,
+        this.lava,
+        this.bgWall,
         this.logFloat1,
         this.logFloat2,
         this.logFloat3,
-        this.logFloat4,
-        this.logFloat5,
-        this.logFloat6,
         this.logWithHero,
-        this.hero
+        this.platformLeft,
+        this.platformMiddle,
+        this.platformRight,
+        this.platformWithHero,
+        this.hero,
+        this.answerBoxLeft,
+        this.answerBoxMiddle,
+        this.answerBoxRight
       );
 
       
@@ -228,7 +458,52 @@ export default {
         textBaseline: 'middle'
       });
 
+      this.answerBoxTextLeft = new this.$createjs.Text(
+        this.getCurrentOption(0).value,
+        this.defaultCanvasWidth / 30 + 'px Comic Sans MS',
+        '#000'
+      );
+      this.answerBoxTextLeft.x = this.answerBoxLeft.x + 110 / 2;
+      this.answerBoxTextLeft.y = this.answerBoxLeft.y + 90 / 2 - 10;
+      this.answerBoxTextLeft.width = 110;
+      this.answerBoxTextLeft.height = 90;
+      this.answerBoxTextLeft.set({
+        textAlign: 'center',
+        textBaseline: 'middle'
+      });
+
+      this.answerBoxTextMiddle = new this.$createjs.Text(
+        this.getCurrentOption(1).value,
+        this.defaultCanvasWidth / 30 + 'px Comic Sans MS',
+        '#000'
+      );
+      this.answerBoxTextMiddle.x = this.answerBoxMiddle.x + 110 / 2;
+      this.answerBoxTextMiddle.y = this.answerBoxMiddle.y + 90 / 2 - 10;
+      this.answerBoxTextMiddle.width = 110;
+      this.answerBoxTextMiddle.height = 90;
+      this.answerBoxTextMiddle.set({
+        textAlign: 'center',
+        textBaseline: 'middle'
+      });
+
+      this.answerBoxTextRight = new this.$createjs.Text(
+        this.getCurrentOption(2).value,
+        this.defaultCanvasWidth / 30 + 'px Comic Sans MS',
+        '#000'
+      );
+      this.answerBoxTextRight.x = this.answerBoxRight.x + 110 / 2;
+      this.answerBoxTextRight.y = this.answerBoxRight.y + 90 / 2 - 10;
+      this.answerBoxTextRight.width = 110;
+      this.answerBoxTextRight.height = 90;
+      this.answerBoxTextRight.set({
+        textAlign: 'center',
+        textBaseline: 'middle'
+      });
+
       this.scene.addChild(
+        this.answerBoxTextLeft,
+        this.answerBoxTextMiddle,
+        this.answerBoxTextRight,
         this.answerBoxText1,
         this.answerBoxText2,
         this.answerBoxText3
@@ -245,6 +520,9 @@ export default {
     },
     clearAnswerBox() {
       this.scene.removeChild(
+        this.answerBoxTextLeft,
+        this.answerBoxTextMiddle,
+        this.answerBoxTextRight,
         this.answerBoxText1,
         this.answerBoxText2,
         this.answerBoxText3
