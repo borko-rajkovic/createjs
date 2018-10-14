@@ -135,60 +135,48 @@ export default {
 
       var ninjaSpriteSheet = new this.$createjs.SpriteSheet({
         framerate: 10,
-        images: [
-          this.queue.getResult('ninja')
-          ],
+        images: [this.queue.getResult('ninja')],
         frames: { width: 170, height: 182, count: 21 },
         animations: {
           preJump: [0, 0],
-          midJump: [1, 2, "midJump", 0.1],
-          rightJump: [7, 8, "rightJump", 0.1],
-          leftJump: [14, 15, "leftJump", 0.1],
-          postJump: [3, 6, "postJump", 0.1]
+          midJump: [1, 2, 'midJump', 0.6],
+          rightJump: [7, 8, 'rightJump', 0.6],
+          leftJump: [14, 15, 'leftJump', 0.6],
+          postJump: [3, 6, 'preJump', 0.6]
         }
       });
 
       this.answerBoxSpriteSheet = new this.$createjs.SpriteSheet({
         framerate: 10,
-        images: [
-          this.queue.getResult('answerBox')
-          ],
+        images: [this.queue.getResult('answerBox')],
         frames: { width: 111, height: 70 },
         animations: { show: [0, 0] }
       });
 
       var platformLeftSpriteSheet = new this.$createjs.SpriteSheet({
         framerate: 10,
-        images: [
-          this.queue.getResult('platformLeft')
-          ],
+        images: [this.queue.getResult('platformLeft')],
         frames: { width: 296, height: 84 },
         animations: { show: [0, 0] }
       });
 
       var platformMiddleSpriteSheet = new this.$createjs.SpriteSheet({
         framerate: 10,
-        images: [
-          this.queue.getResult('platformMiddle')
-          ],
+        images: [this.queue.getResult('platformMiddle')],
         frames: { width: 265, height: 106 },
         animations: { show: [0, 0] }
       });
 
       var platformRightSpriteSheet = new this.$createjs.SpriteSheet({
         framerate: 10,
-        images: [
-          this.queue.getResult('platformRight')
-          ],
+        images: [this.queue.getResult('platformRight')],
         frames: { width: 219, height: 86 },
         animations: { show: [0, 0] }
       });
 
       var lavaSingleSpriteSheet = new this.$createjs.SpriteSheet({
         framerate: 10,
-        images: [
-          this.queue.getResult('lavaSprites'),
-          ],
+        images: [this.queue.getResult('lavaSprites')],
         frames: { width: 1022, height: 560, spacing: 1, margin: 1 },
         animations: { flow: [0, 13] }
       });
@@ -210,26 +198,21 @@ export default {
           this.queue.getResult('lavaSprite12'),
           this.queue.getResult('lavaSprite13'),
           this.queue.getResult('lavaSprite14')
-          ],
+        ],
         frames: { width: 1024, height: 560 },
         animations: { flow: [0, 13] }
       });
 
       var bgWallSpriteSheet = new this.$createjs.SpriteSheet({
         framerate: 10,
-        images: [
-          this.queue.getResult('bgWall'),
-          ],
+        images: [this.queue.getResult('bgWall')],
         frames: { width: 1024, height: 1668 },
         animations: { show: [0, 0] }
       });
 
-
       var bgTextureSpriteSheet = new this.$createjs.SpriteSheet({
         framerate: 10,
-        images: [
-          this.queue.getResult("bgTexture")
-          ],
+        images: [this.queue.getResult('bgTexture')],
         frames: { width: 1024, height: 1668 },
         animations: { show: [0, 0] }
       });
@@ -275,26 +258,44 @@ export default {
       this.bgWall = new this.$createjs.Sprite(bgWallSpriteSheet, 'show');
       this.bgTexture = new this.$createjs.Sprite(bgTextureSpriteSheet, 'show');
 
-      this.platformLeft = new this.$createjs.Sprite(platformLeftSpriteSheet, 'platformLeft');
-      this.platformMiddle = new this.$createjs.Sprite(platformMiddleSpriteSheet, 'platformMiddle');
-      this.platformRight = new this.$createjs.Sprite(platformRightSpriteSheet, 'platformRight');
-      this.platformWithHero = new this.$createjs.Sprite(platformRightSpriteSheet, 'platformLeft');
+      this.platformLeft = new this.$createjs.Sprite(
+        platformLeftSpriteSheet,
+        'platformLeft'
+      );
+      this.platformMiddle = new this.$createjs.Sprite(
+        platformMiddleSpriteSheet,
+        'platformMiddle'
+      );
+      this.platformRight = new this.$createjs.Sprite(
+        platformRightSpriteSheet,
+        'platformRight'
+      );
+      this.platformWithNinja = new this.$createjs.Sprite(
+        platformRightSpriteSheet,
+        'platformLeft'
+      );
 
-
-      this.answerBoxLeft = new this.$createjs.Sprite(this.answerBoxSpriteSheet, 'show');
-      this.answerBoxMiddle = new this.$createjs.Sprite(this.answerBoxSpriteSheet, 'show');
-      this.answerBoxRight = new this.$createjs.Sprite(this.answerBoxSpriteSheet, 'show');
+      this.answerBoxLeft = new this.$createjs.Sprite(
+        this.answerBoxSpriteSheet,
+        'show'
+      );
+      this.answerBoxMiddle = new this.$createjs.Sprite(
+        this.answerBoxSpriteSheet,
+        'show'
+      );
+      this.answerBoxRight = new this.$createjs.Sprite(
+        this.answerBoxSpriteSheet,
+        'show'
+      );
 
       this.logFloat1 = new this.$createjs.Sprite(logSpriteSheet, 'float');
       this.logFloat2 = new this.$createjs.Sprite(logSpriteSheet, 'float');
       this.logFloat3 = new this.$createjs.Sprite(logSpriteSheet, 'float');
       this.logWithHero = new this.$createjs.Sprite(logSpriteSheet, 'withHero');
 
-      this.hero = new this.$createjs.Sprite(heroSpriteSheet, 'preJump');
       this.ninja = new this.$createjs.Sprite(ninjaSpriteSheet, 'preJump');
 
       // Alfred - add function to handle event after animation end
-
 
       this.scene = new this.$createjs.Container();
 
@@ -304,25 +305,24 @@ export default {
 
       this.stage.addChild(this.scene);
 
-      this.heroXOrigin = this.hero.x;
-      this.heroYOrigin = this.hero.y;
-
       this.gameStart();
       this.setAnswerBox();
     },
     // Alfred - Add function to restart
-    restart () {
+    restart() {
+      this.ninjaIsDead = false;
+      if (this.answerBoxLeft) this.answerBoxLeft.visible = true;
+      if (this.answerBoxMiddle) this.answerBoxMiddle.visible = true;
+      if (this.answerBoxRight) this.answerBoxRight.visible = true;
       this.startTimer();
-      this.scene.removeAllChildren()
-      this.hero.removeAllEventListeners();
-      this.hero.addEventListener('animationend', event => {
+      this.scene.removeAllChildren();
+
+      this.ninja.removeAllEventListeners();
+      this.ninja.addEventListener('animationend', event => {
         this.handleAnimationEnd();
       });
 
-      this.platformLeft.setTransform(
-        80,
-        this.defaultCanvasHeight - 520
-      );
+      this.platformLeft.setTransform(80, this.defaultCanvasHeight - 520);
 
       this.platformMiddle.setTransform(
         this.defaultCanvasWidth / 3 - 50,
@@ -334,17 +334,16 @@ export default {
         this.defaultCanvasHeight - 520
       );
 
-      this.platformWithHero.setTransform(
+      this.platformWithNinja.setTransform(
         this.defaultCanvasWidth / 3 - 50,
         this.defaultCanvasHeight - 250
       );
-
 
       this.logFloat1.setTransform(
         this.defaultCanvasWidth - 700,
         this.defaultCanvasHeight - 300 - 400
       );
-      
+
       this.logFloat2.setTransform(200, this.defaultCanvasHeight - 350 - 400);
       this.logFloat3.setTransform(
         this.defaultCanvasWidth / 3,
@@ -354,30 +353,22 @@ export default {
         this.defaultCanvasWidth / 3 - 50,
         this.defaultCanvasHeight - 90 - 90 - 400
       );
-      this.lava.setTransform(
-        0,
-        850
-      );
-      this.bgWall.setTransform(
-        0,
-        0
-      );
-      this.bgTexture.setTransform(
-        0,
-        0
-      );
+      this.lava.setTransform(0, 850);
+      this.bgWall.setTransform(0, 0);
+      this.bgTexture.setTransform(0, 0);
       this.logXOrigin = this.logWithHero.x;
       this.logYOrigin = this.logWithHero.y;
-
-      this.hero.setTransform(
-        this.defaultCanvasWidth / 3 - 50,
-        this.defaultCanvasHeight - 380
-      );
 
       this.ninja.setTransform(
         this.defaultCanvasWidth / 3,
         this.defaultCanvasHeight - 404
       );
+
+      this.ninjaXOrigin = this.ninja.x;
+      this.ninjaYOrigin = this.ninja.y;
+
+      this.platformXOrigin = this.platformWithNinja.x;
+      this.platformYOrigin = this.platformWithNinja.y;
 
       // this.ninja.gotoAndPlay("preJump");
       // this.ninja.gotoAndPlay("midJump");
@@ -400,11 +391,10 @@ export default {
         this.defaultCanvasHeight - 600
       );
 
-
-      this.logFloat1.gotoAndPlay('float')
-      this.logFloat2.gotoAndPlay('float')
-      this.logFloat3.gotoAndPlay('float')
-      this.hero.gotoAndPlay('preJump')
+      this.logFloat1.gotoAndPlay('float');
+      this.logFloat2.gotoAndPlay('float');
+      this.logFloat3.gotoAndPlay('float');
+      this.ninja.gotoAndPlay('preJump');
 
       this.scene.addChild(
         this.bgTexture,
@@ -417,32 +407,90 @@ export default {
         this.platformLeft,
         this.platformMiddle,
         this.platformRight,
-        this.platformWithHero,
-        // this.hero,
+        this.platformWithNinja,
         this.ninja,
         this.answerBoxLeft,
         this.answerBoxMiddle,
         this.answerBoxRight
       );
 
-      
-      // this.heroXOrigin = this.hero.x;
-      // this.heroYOrigin = this.hero.y;
-
-      this.heroX = this.hero.x;
-      this.heroY = this.hero.y;
+      this.ninjaX = this.ninja.x;
+      this.ninjaY = this.ninja.y;
     },
     handleAnimationEnd() {
       if (
-        this.hero.currentAnimation === 'leftJump' ||
-        this.hero.currentAnimation === 'midJump' ||
-        this.hero.currentAnimation === 'rightJump'
+        this.ninja.currentAnimation === 'postJump' &&
+        this.ninjaIsDead === true
       ) {
-        this.hero.gotoAndPlay('postJump');
-      }
-      if (this.hero.currentAnimation === 'afterLogSinking') {
-        this.hero.stop();
         this.deduceLife();
+      }
+
+      if (
+        this.ninja.currentAnimation === 'postJump' &&
+        this.ninjaShouldContinue === true
+      ) {
+        this.ninjaShouldContinue === false;
+
+        this.answerBoxLeft.visible = false;
+        this.answerBoxMiddle.visible = false;
+        this.answerBoxRight.visible = false;
+
+        this.$createjs.Tween.get(this.ninja).to(
+          { x: this.ninjaXOrigin, y: this.ninjaYOrigin },
+          1500,
+          createjs.Ease.circOut
+        );
+
+        this.$createjs.Tween.get(this.platformSelected).to(
+          { x: this.platformXOrigin, y: this.platformYOrigin },
+          1500,
+          createjs.Ease.circOut
+        );
+
+        let hidePlatformWithNinja = this.$createjs.Tween.get(
+          this.platformWithNinja
+        ).to(
+          { x: this.platformWithNinja.x + 1000, y: this.platformWithNinja.y },
+          1500,
+          createjs.Ease.circOut
+        );
+
+        // Borko: switch platform on which ninja is standing with selected platform
+        let temp = this.platformWithNinja;
+        this.platformWithNinja = this.platformSelected;
+        this.platformSelected = temp;
+
+        // Borko: return pointer to correct platform
+        switch (this.selectedIndex) {
+          case 0:
+            this.platformLeft = this.platformSelected;
+            break;
+          case 1:
+            this.platformMiddle = this.platformSelected;
+            break;
+          case 2:
+            this.platformRight = this.platformSelected;
+            break;
+        }
+
+        this.platformSelected.setTransform(this.platformSelectedX, -1000);
+
+        this.$createjs.Tween.get(this.platformSelected).to(
+          { x: this.platformSelectedX, y: this.platformSelectedY },
+          1500,
+          createjs.Ease.circOut
+        );
+
+        hidePlatformWithNinja.addEventListener('complete', () => {
+          this.ninja.gotoAndPlay('preJump');
+          console.log('Finished movement of the ninja');
+
+          this.answerBoxLeft.visible = true;
+          this.answerBoxMiddle.visible = true;
+          this.answerBoxRight.visible = true;
+
+          this.nextQuestion();
+        });
       }
     },
     setAnswerBox() {
@@ -504,6 +552,10 @@ export default {
       }
     },
     clearAnswerBox() {
+      // this.answerBoxLeft.visible = false;
+      // this.answerBoxMiddle.visible = false;
+      // this.answerBoxRight.visible = false;
+
       this.scene.removeChild(
         this.answerBoxTextLeft,
         this.answerBoxTextMiddle,
@@ -556,134 +608,85 @@ export default {
         if (this.gameReady && this.userInteraction) {
           this.userInteraction = false;
           // Alfred - no matter the answer is correct or not, the ninja would jump to that log
-          this.jumpToLog(index, this.noOfLifeRemained <= 1 && !event.target.parent.correct);
+          this.jumpToPlatform(
+            index,
+            this.noOfLifeRemained <= 1 && !event.target.parent.correct
+          );
           if (event.target.parent.correct) {
             this.addScore();
           } else {
             if (this.noOfLifeRemained > 1) this.deduceLife();
           }
-          // Alfred - move to next question after animation completed
-          // this.nextQuestion();
         }
       });
       this.stage.addChild(_container);
     },
-    jumpToLog(index, gameLost) {
-      console.log('Jump to log', index, gameLost);
-      this.selectedLogIndex = index;
+    jumpToPlatform(index, gameLost) {
+      console.log('Jump to platform', index, gameLost);
+      this.selectedIndex = index;
+      var xDiff = this.ninja.x - this.platformWithNinja.x;
+      var yDiff = this.ninja.y - this.platformWithNinja.y;
+
       switch (index) {
         case 0:
-          // Alfred - use gotoAndPlay to change animation
-          this.hero.gotoAndPlay('rightJump');
-          this.heroX = this.logFloat1.x;
-          this.heroY = this.logFloat1.y - 130;
-          this.logSelected = this.logFloat1;
-          this.logSelectedX = this.logFloat1.x;
-          this.logSelectedY = this.logFloat1.y;
+          this.ninja.gotoAndPlay('leftJump');
+          this.ninjaX = this.platformLeft.x + xDiff;
+          this.ninjaY = this.platformLeft.y + yDiff;
+          this.platformSelected = this.platformLeft;
+          this.platformSelectedX = this.platformLeft.x;
+          this.platformSelectedY = this.platformLeft.y;
+          this.selectedAnswerBox = this.answerBoxLeft;
+          this.selectedAnswerBoxText = this.answerBoxTextLeft;
           break;
         case 1:
-          // Alfred - use gotoAndPlay to change animation
-          this.hero.gotoAndPlay('midJump');
-          this.heroX = this.logFloat2.x;
-          this.heroY = this.logFloat2.y - 130;
-          this.logSelected = this.logFloat2;
-          this.logSelectedX = this.logFloat2.x;
-          this.logSelectedY = this.logFloat2.y;
+          this.ninja.gotoAndPlay('midJump');
+          this.ninjaX = this.platformMiddle.x + xDiff;
+          this.ninjaY = this.platformMiddle.y + yDiff;
+          this.platformSelected = this.platformMiddle;
+          this.platformSelectedX = this.platformMiddle.x;
+          this.platformSelectedY = this.platformMiddle.y;
+          this.selectedAnswerBox = this.answerBoxMiddle;
+          this.selectedAnswerBoxText = this.answerBoxTextMiddle;
           break;
         case 2:
-          // Alfred - use gotoAndPlay to change animation
-          this.hero.gotoAndPlay('leftJump');
-          this.heroX = this.logFloat3.x;
-          this.heroY = this.logFloat3.y - 130;
-          this.logSelected = this.logFloat3;
-          this.logSelectedX = this.logFloat3.x;
-          this.logSelectedY = this.logFloat3.y;
+          this.ninja.gotoAndPlay('rightJump');
+          this.ninjaX = this.platformRight.x + xDiff;
+          this.ninjaY = this.platformRight.y + yDiff;
+          this.platformSelected = this.platformRight;
+          this.platformSelectedX = this.platformRight.x;
+          this.platformSelectedY = this.platformRight.y;
+          this.selectedAnswerBox = this.answerBoxRight;
+          this.selectedAnswerBoxText = this.answerBoxTextRight;
           break;
         default:
           break;
       }
 
-      // Alfred - use Tween to animate hero movement
-      let moveToLog = this.$createjs.Tween.get(this.hero).to(
-        { x: this.heroX, y: this.heroY },
+      this.selectedAnswerBox.visible = false;
+      this.selectedAnswerBoxText.visible = false;
+
+      let moveToPlatform = this.$createjs.Tween.get(this.ninja).to(
+        { x: this.ninjaX, y: this.ninjaY },
         500,
         createjs.Ease.circOut
       );
 
-      moveToLog.addEventListener('complete', () => {
+      moveToPlatform.addEventListener('complete', () => {
         console.log('Complete tween');
+        this.ninja.gotoAndPlay('postJump');
         if (!gameLost) {
           this.clearAnswerBox();
-          this.heroContinues(index);
+          this.ninjaContinues(index);
         } else {
-          this.heroDies(index);
+          this.ninjaDies(index);
         }
       });
     },
-    heroContinues(index) {
-      this.$createjs.Tween.get(this.hero).to(
-        { x: this.heroXOrigin, y: this.heroYOrigin },
-        1500,
-        createjs.Ease.circOut
-      );
-      this.logSelected.gotoAndPlay('withHero');
-      this.$createjs.Tween.get(this.logSelected).to(
-        { x: this.logXOrigin, y: this.logYOrigin },
-        1500,
-        createjs.Ease.circOut
-      );
-      let hideLogWithHero = this.$createjs.Tween.get(this.logWithHero).to(
-        { x: this.logWithHero.x, y: this.logWithHero.y + 1000 },
-        1500,
-        createjs.Ease.circOut
-      );
-
-      // Borko: switch log on which hero is standing with selected log
-      let temp = this.logWithHero;
-      this.logWithHero = this.logSelected;
-      this.logSelected = temp;
-
-      // Borko: return pointer to correct log
-      switch (index) {
-        case 0:
-          this.logFloat1 = this.logSelected;
-          break;
-        case 1:
-          this.logFloat2 = this.logSelected;
-          break;
-        case 2:
-          this.logFloat3 = this.logSelected;
-          break;
-      }
-
-      const logXOffset = index === 0 ? 5000 : index === 1 ? -5000 : 0;
-
-      this.logSelected.setTransform(logXOffset, -1000);
-
-      this.logSelected.gotoAndPlay('float');
-
-      this.$createjs.Tween.get(this.logSelected).to(
-        { x: this.logSelectedX, y: this.logSelectedY },
-        1500,
-        createjs.Ease.circOut
-      );
-
-      hideLogWithHero.addEventListener('complete', () => {
-        this.hero.gotoAndPlay('preJump');
-        console.log('Finished movement of the hero');
-        this.nextQuestion();
-      });
+    ninjaContinues(index) {
+      this.ninjaShouldContinue = true;
     },
-    heroDies(index) {
-      this.logSelected.gotoAndPlay('dive');
-      this.hero.gotoAndPlay('panicMovements');
-
-      this.logSelected.addEventListener('animationend', e => {
-        if (e.name === 'dive'){
-          this.logSelected.stop();
-          this.hero.gotoAndPlay('afterLogSinking');
-        }
-      });
+    ninjaDies(index) {
+      this.ninjaIsDead = true;
     },
     tick(event) {
       var deltaS = event.delta / 1000;
@@ -692,7 +695,7 @@ export default {
     },
     showAnswerArea() {
       // Alfred - call the restart function when play or replay button is clicked
-      this.restart()
+      this.restart();
       this.gameReady = true;
       this.userInteraction = true;
       this.setCurrentQuestion();
