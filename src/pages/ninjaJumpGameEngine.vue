@@ -5,8 +5,6 @@
 </template>
 
 <script>
-// TODO add timer after you finish the game
-
 import GameShellMixin from '../library/mixins/gameShell';
 export default {
   name: 'ninja-jump-game-engine',
@@ -18,7 +16,8 @@ export default {
       iconCheck: null,
       iconCross: null,
       waitForNext: 0,
-      showTimer: true
+      showTimer: true,
+      ninjaIsMoving: false
     };
   },
   methods: {
@@ -266,6 +265,7 @@ export default {
     // Alfred - Add function to restart
     restart() {
       this.ninjaIsDead = false;
+      this.ninjaIsMoving = false;
       if (this.answerBoxLeft) this.answerBoxLeft.visible = true;
       if (this.answerBoxMiddle) this.answerBoxMiddle.visible = true;
       if (this.answerBoxRight) this.answerBoxRight.visible = true;
@@ -448,6 +448,7 @@ export default {
           this.answerBoxRight.visible = true;
 
           this.nextQuestion();
+          this.ninjaIsMoving = false;
         });
       }
     },
@@ -561,6 +562,7 @@ export default {
       _container.addEventListener('click', event => {
         if (this.gameReady && this.userInteraction) {
           this.userInteraction = false;
+          this.ninjaIsMoving = true;
           this.jumpToPlatform(
             index,
             this.noOfLifeRemained <= 1 && !event.target.parent.correct
@@ -647,7 +649,7 @@ export default {
     },
     tick(event) {
       var deltaS = event.delta / 1000;
-
+      if (!this.ninjaIsMoving) this.updateTimer();
       this.stage.update(event);
     },
     showAnswerArea() {
