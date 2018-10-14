@@ -17,7 +17,7 @@ export default {
       noOfOptionContainer: 3,
       iconCheck: null,
       iconCross: null,
-      waitForNext: 200,
+      waitForNext: 0,
       showTimer: true
     };
   },

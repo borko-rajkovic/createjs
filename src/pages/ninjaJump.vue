@@ -3,7 +3,6 @@
 </template>
 
 <script>
-
 import NinjaJumpGameEngine from './ninjaJumpGameEngine';
 export default {
   name: 'ninja-jump',
