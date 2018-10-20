@@ -23,28 +23,16 @@ export default {
       this.queue = new this.$createjs.LoadQueue();
       this.queue.on('complete', this.handleComplete, this);
       let manifest = this.gameShellManifest.concat([
-        { id: 'option1BgImg', src: 'statics/game/ninjajump/button1.png' },
-        { id: 'option2BgImg', src: 'statics/game/ninjajump/button2.png' },
-        { id: 'option3BgImg', src: 'statics/game/ninjajump/button3.png' },
-        {
-          id: 'platformLeft',
-          src: 'statics/game/ninjajump/platform-1.png'
-        },
-        {
-          id: 'platformMiddle',
-          src: 'statics/game/ninjajump/platform-2.png'
-        },
-        {
-          id: 'platformRight',
-          src: 'statics/game/ninjajump/platform-3.png'
-        },
+        { id: 'option1BgImg', src: 'statics/game/ninjaghostleg/button1.png' },
+        { id: 'option2BgImg', src: 'statics/game/ninjaghostleg/button2.png' },
+        { id: 'option3BgImg', src: 'statics/game/ninjaghostleg/button3.png' },
         {
           id: 'answerBox',
-          src: 'statics/game/ninjajump/answer-box.png'
+          src: 'statics/game/ninjaghostleg/answer-box.png'
         },
         {
           id: 'ninja',
-          src: 'statics/game/ninjajump/ninja.png'
+          src: 'statics/game/ninjaghostleg/ninja.png'
         },
         {
           id: 'gameBackground',
@@ -68,60 +56,23 @@ export default {
       var ninjaSpriteSheet = new this.$createjs.SpriteSheet({
         framerate: 10,
         images: [this.queue.getResult('ninja')],
-        frames: { width: 170, height: 182, count: 21 },
+        frames: { width: 142, height: 144, count: 10 },
         animations: {
-          preJump: [0, 0],
-          midJump: [1, 2, 'midJump', 0.6],
-          rightJump: [7, 8, 'rightJump', 0.6],
-          leftJump: [14, 15, 'leftJump', 0.6],
-          postJump: [3, 6, 'preJump', 0.6]
+          stand: [0, 0],
+          moveStraight: [1, 2, 'moveStraight', 0.4],
+          moveRight: [3, 4, 'moveRight', 0.4],
+          moveLeft: [5, 6, 'moveLeft', 0.4],
+          success: [7, 7],
+          failure: [8, 8]
         }
       });
 
       this.answerBoxSpriteSheet = new this.$createjs.SpriteSheet({
         framerate: 10,
         images: [this.queue.getResult('answerBox')],
-        frames: { width: 111, height: 70 },
+        frames: { width: 115, height: 66 },
         animations: { show: [0, 0] }
       });
-
-      this.platformLeftSpriteSheet = new this.$createjs.SpriteSheet({
-        framerate: 10,
-        images: [this.queue.getResult('platformLeft')],
-        frames: { width: 296, height: 84 },
-        animations: { show: [0, 0] }
-      });
-
-      this.platformMiddleSpriteSheet = new this.$createjs.SpriteSheet({
-        framerate: 10,
-        images: [this.queue.getResult('platformMiddle')],
-        frames: { width: 265, height: 106 },
-        animations: { show: [0, 0] }
-      });
-
-      this.platformRightSpriteSheet = new this.$createjs.SpriteSheet({
-        framerate: 10,
-        images: [this.queue.getResult('platformRight')],
-        frames: { width: 219, height: 86 },
-        animations: { show: [0, 0] }
-      });
-
-      this.platformLeft = new this.$createjs.Sprite(
-        this.platformLeftSpriteSheet,
-        'platformLeft'
-      );
-      this.platformMiddle = new this.$createjs.Sprite(
-        this.platformMiddleSpriteSheet,
-        'platformMiddle'
-      );
-      this.platformRight = new this.$createjs.Sprite(
-        this.platformRightSpriteSheet,
-        'platformRight'
-      );
-      this.platformWithNinja = new this.$createjs.Sprite(
-        this.platformRightSpriteSheet,
-        'platformLeft'
-      );
 
       this.answerBoxLeft = new this.$createjs.Sprite(
         this.answerBoxSpriteSheet,
@@ -136,7 +87,9 @@ export default {
         'show'
       );
 
-      this.ninja = new this.$createjs.Sprite(ninjaSpriteSheet, 'preJump');
+      this.ninja = new this.$createjs.Sprite(ninjaSpriteSheet, 'stand');
+      this.ninjaMiddle = new this.$createjs.Sprite(ninjaSpriteSheet, 'stand');
+      this.ninjaRight = new this.$createjs.Sprite(ninjaSpriteSheet, 'stand');
 
       this.scene = new this.$createjs.Container();
 
@@ -151,9 +104,6 @@ export default {
     },
     restart() {
       this.ninjaIsDead = false;
-      if (this.answerBoxLeft) this.answerBoxLeft.visible = true;
-      if (this.answerBoxMiddle) this.answerBoxMiddle.visible = true;
-      if (this.answerBoxRight) this.answerBoxRight.visible = true;
       this.scene.removeAllChildren();
 
       this.ninja.removeAllEventListeners();
@@ -161,57 +111,36 @@ export default {
         this.handleAnimationEnd();
       });
 
-      this.platformLeft.setTransform(80, this.defaultCanvasHeight - 520);
-
-      this.platformMiddle.setTransform(
-        this.defaultCanvasWidth / 3 - 50,
-        this.defaultCanvasHeight - 700
-      );
-
-      this.platformRight.setTransform(
-        this.defaultCanvasWidth - 660,
-        this.defaultCanvasHeight - 520
-      );
-
-      this.platformWithNinja.setTransform(
-        this.defaultCanvasWidth / 3 - 50,
-        this.defaultCanvasHeight - 250
-      );
-
       this.ninja.setTransform(
-        this.defaultCanvasWidth / 3,
-        this.defaultCanvasHeight - 404
+        220 - 13,
+        250
+      );
+
+      this.ninjaMiddle.setTransform(
+        450 - 13,
+        250
+      );
+
+      this.ninjaRight.setTransform(
+        680 - 13,
+        250
       );
 
       this.ninjaXOrigin = this.ninja.x;
       this.ninjaYOrigin = this.ninja.y;
 
-      this.platformXOrigin = this.platformWithNinja.x;
-      this.platformYOrigin = this.platformWithNinja.y;
+      this.answerBoxLeft.setTransform(220, this.defaultCanvasHeight - 200);
 
-      this.answerBoxLeft.setTransform(
-        this.platformLeft.x + 180 / 2,
-        this.defaultCanvasHeight - 600
-      );
+      this.answerBoxMiddle.setTransform(450, this.defaultCanvasHeight - 200);
 
-      this.answerBoxMiddle.setTransform(
-        this.platformMiddle.x + 140 / 2,
-        this.defaultCanvasHeight - 780
-      );
+      this.answerBoxRight.setTransform(680, this.defaultCanvasHeight - 200);
 
-      this.answerBoxRight.setTransform(
-        this.platformRight.x + 100 / 2,
-        this.defaultCanvasHeight - 600
-      );
-
-      this.ninja.gotoAndPlay('preJump');
+      this.ninja.gotoAndPlay('stand');
 
       this.scene.addChild(
-        this.platformLeft,
-        this.platformMiddle,
-        this.platformRight,
-        this.platformWithNinja,
         this.ninja,
+        this.ninjaMiddle,
+        this.ninjaRight,
         this.answerBoxLeft,
         this.answerBoxMiddle,
         this.answerBoxRight
@@ -222,14 +151,14 @@ export default {
     },
     handleAnimationEnd() {
       if (
-        this.ninja.currentAnimation === 'postJump' &&
+        this.ninja.currentAnimation === 'success' &&
         this.ninjaIsDead === true
       ) {
         this.deduceLife();
       }
 
       if (
-        this.ninja.currentAnimation === 'postJump' &&
+        this.ninja.currentAnimation === 'success' &&
         this.ninjaShouldContinue === true &&
         this.ninjaIsDead === false
       ) {
@@ -240,93 +169,13 @@ export default {
           1500,
           createjs.Ease.circOut
         );
-
-        this.$createjs.Tween.get(this.platformSelected).to(
-          { x: this.platformXOrigin, y: this.platformYOrigin },
-          1500,
-          createjs.Ease.circOut
-        );
-
-        let hidePlatformWithNinja = this.$createjs.Tween.get(
-          this.platformWithNinja
-        ).to(
-          { x: this.platformWithNinja.x + 1000, y: this.platformWithNinja.y },
-          1500,
-          createjs.Ease.circOut
-        );
-
-        // Switch platform on which ninja is standing with selected platform
-        let temp = this.platformWithNinja;
-        this.platformWithNinja = this.platformSelected;
-        this.platformSelected = temp;
-
-        // Borko: return pointer to correct platform
-        switch (this.selectedIndex) {
-          case 0:
-            this.platformLeft = new this.$createjs.Sprite(
-              this.platformLeftSpriteSheet,
-              'platformLeft'
-            );
-            this.platformLeft.setTransform(80, this.defaultCanvasHeight - 520);
-            this.platformSelected = this.platformLeft;
-            break;
-          case 1:
-            this.platformMiddle = new this.$createjs.Sprite(
-              this.platformMiddleSpriteSheet,
-              'platformMiddle'
-            );
-
-            this.platformMiddle.setTransform(
-              this.defaultCanvasWidth / 3 - 50,
-              this.defaultCanvasHeight - 700
-            );
-
-            this.platformSelected = this.platformMiddle;
-            break;
-          case 2:
-            this.platformRight = new this.$createjs.Sprite(
-              this.platformRightSpriteSheet,
-              'platformRight'
-            );
-            this.platformRight.setTransform(
-              this.defaultCanvasWidth - 660,
-              this.defaultCanvasHeight - 520
-            );
-
-            this.platformSelected = this.platformRight;
-            break;
-        }
-
-        this.platformSelected.setTransform(this.platformSelectedX, -500);
-        this.scene.addChild(
-          this.platformLeft,
-          this.platformMiddle,
-          this.platformRight
-        );
-
-        this.$createjs.Tween.get(this.platformSelected).to(
-          { x: this.platformSelectedX, y: this.platformSelectedY },
-          1500,
-          createjs.Ease.circOut
-        );
-
-        hidePlatformWithNinja.addEventListener('complete', () => {
-          this.ninja.gotoAndPlay('preJump');
-          console.log('Finished movement of the ninja');
-
-          this.answerBoxLeft.visible = true;
-          this.answerBoxMiddle.visible = true;
-          this.answerBoxRight.visible = true;
-
-          this.nextQuestion();
-        });
       }
     },
     setAnswerBox() {
       this.answerBoxTextLeft = new this.$createjs.Text(
         this.getCurrentOption(0).value,
         this.defaultCanvasWidth / 30 + 'px Comic Sans MS',
-        '#000'
+        '#fff'
       );
       this.answerBoxTextLeft.x = this.answerBoxLeft.x + 110 / 2;
       this.answerBoxTextLeft.y = this.answerBoxLeft.y + 90 / 2 - 10;
@@ -340,7 +189,7 @@ export default {
       this.answerBoxTextMiddle = new this.$createjs.Text(
         this.getCurrentOption(1).value,
         this.defaultCanvasWidth / 30 + 'px Comic Sans MS',
-        '#000'
+        '#fff'
       );
       this.answerBoxTextMiddle.x = this.answerBoxMiddle.x + 110 / 2;
       this.answerBoxTextMiddle.y = this.answerBoxMiddle.y + 90 / 2 - 10;
@@ -354,7 +203,7 @@ export default {
       this.answerBoxTextRight = new this.$createjs.Text(
         this.getCurrentOption(2).value,
         this.defaultCanvasWidth / 30 + 'px Comic Sans MS',
-        '#000'
+        '#fff'
       );
       this.answerBoxTextRight.x = this.answerBoxRight.x + 110 / 2;
       this.answerBoxTextRight.y = this.answerBoxRight.y + 90 / 2 - 10;
@@ -412,7 +261,7 @@ export default {
           textAlign: 'center',
           textBaseline: 'middle'
         });
-        _container.addChild(_answerText);
+        // _container.addChild(_answerText);
       } else {
         let _answerImg = new this.$createjs.Bitmap(
           this.queue.getResult(_option.value)
@@ -446,48 +295,27 @@ export default {
       this.stage.addChild(_container);
     },
     jumpToPlatform(index, gameLost) {
-      console.log('Jump to platform', index, gameLost);
       this.selectedIndex = index;
-      var xDiff = this.ninja.x - this.platformWithNinja.x;
-      var yDiff = this.ninja.y - this.platformWithNinja.y;
 
       switch (index) {
         case 0:
-          this.ninja.gotoAndPlay('leftJump');
-          this.ninjaX = this.platformLeft.x + xDiff;
-          this.ninjaY = this.platformLeft.y + yDiff;
-          this.platformSelected = this.platformLeft;
-          this.platformSelectedX = this.platformLeft.x;
-          this.platformSelectedY = this.platformLeft.y;
-          this.selectedAnswerBox = this.answerBoxLeft;
-          this.selectedAnswerBoxText = this.answerBoxTextLeft;
+          this.ninja.gotoAndPlay('moveLeft');
+          this.ninjaX = 300;
+          this.ninjaY = 300;
           break;
         case 1:
-          this.ninja.gotoAndPlay('midJump');
-          this.ninjaX = this.platformMiddle.x + xDiff;
-          this.ninjaY = this.platformMiddle.y + yDiff;
-          this.platformSelected = this.platformMiddle;
-          this.platformSelectedX = this.platformMiddle.x;
-          this.platformSelectedY = this.platformMiddle.y;
-          this.selectedAnswerBox = this.answerBoxMiddle;
-          this.selectedAnswerBoxText = this.answerBoxTextMiddle;
+          this.ninja.gotoAndPlay('moveStraight');
+          this.ninjaX = 400;
+          this.ninjaY = 400;
           break;
         case 2:
-          this.ninja.gotoAndPlay('rightJump');
-          this.ninjaX = this.platformRight.x + xDiff;
-          this.ninjaY = this.platformRight.y + yDiff;
-          this.platformSelected = this.platformRight;
-          this.platformSelectedX = this.platformRight.x;
-          this.platformSelectedY = this.platformRight.y;
-          this.selectedAnswerBox = this.answerBoxRight;
-          this.selectedAnswerBoxText = this.answerBoxTextRight;
+          this.ninja.gotoAndPlay('moveRight');
+          this.ninjaX = 500;
+          this.ninjaY = 500;
           break;
         default:
           break;
       }
-
-      this.selectedAnswerBox.visible = false;
-      this.selectedAnswerBoxText.visible = false;
 
       let moveToPlatform = this.$createjs.Tween.get(this.ninja).to(
         { x: this.ninjaX, y: this.ninjaY },
@@ -497,7 +325,7 @@ export default {
 
       moveToPlatform.addEventListener('complete', () => {
         console.log('Complete tween');
-        this.ninja.gotoAndPlay('postJump');
+        this.ninja.gotoAndPlay('success');
         if (!gameLost) {
           this.clearAnswerBox();
           this.ninjaContinues(index);
@@ -507,10 +335,6 @@ export default {
       });
     },
     ninjaContinues(index) {
-      this.answerBoxLeft.visible = false;
-      this.answerBoxMiddle.visible = false;
-      this.answerBoxRight.visible = false;
-
       this.ninjaShouldContinue = true;
     },
     ninjaDies(index) {
