@@ -57,6 +57,7 @@ export default {
     handleComplete() {
       this.initGameValues();
       this.setGameShell();
+      this.stage.removeChild(this.stage.children[1]);
       this.$createjs.Ticker.timingMode = this.$createjs.Ticker.RAF;
 
       // place option buttons
