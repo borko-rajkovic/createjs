@@ -1,11 +1,11 @@
 export default [
   {
-    path: '/game-sample1',
-    component: () => import('pages/gameSample1')
+    path: '/ninja-river-jump',
+    component: () => import('pages/ninjaRiverJump')
   },
   {
-    path: '/ninja-jump',
-    component: () => import('pages/ninjaJump')
+    path: '/ninja-lava-jump',
+    component: () => import('pages/ninjaLavaJump')
   },
   {
     path: '/game',

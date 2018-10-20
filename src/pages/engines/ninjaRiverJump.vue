@@ -5,9 +5,9 @@
 </template>
 
 <script>
-import GameShellMixin from '../library/mixins/gameShell';
+import GameShellMixin from '../../library/mixins/gameShell';
 export default {
-  name: 'game-engine1',
+  name: 'ninja-river-jump-game-engine',
   mixins: [GameShellMixin],
   data() {
     return {

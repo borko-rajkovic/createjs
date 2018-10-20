@@ -1,13 +1,13 @@
 <template>
-  <ninja-jump-game-engine :noOfLife="noOfLife" :scorePerAnswer="scorePerAnswer" :questions="questions"></ninja-jump-game-engine>
+  <ninja-lava-jump-game-engine :noOfLife="noOfLife" :scorePerAnswer="scorePerAnswer" :questions="questions"></ninja-lava-jump-game-engine>
 </template>
 
 <script>
-import NinjaJumpGameEngine from './ninjaJumpGameEngine';
+import NinjaLavaJumpGameEngine from './engines/ninjaLavaJump';
 export default {
-  name: 'ninja-jump',
+  name: 'ninja-lava-jump',
   components: {
-    NinjaJumpGameEngine
+    NinjaLavaJumpGameEngine
   },
   computed: {
     noOfLife() {
