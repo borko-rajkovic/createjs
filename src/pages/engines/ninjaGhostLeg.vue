@@ -13,9 +13,7 @@ export default {
     return {
       optionContainers: [],
       noOfOptionContainer: 3,
-      waitForNext: 0,
-      showTimer: true,
-      ninjaIsMoving: false
+      waitForNext: 0
     };
   },
   methods: {
@@ -28,71 +26,6 @@ export default {
         { id: 'option1BgImg', src: 'statics/game/ninjajump/button1.png' },
         { id: 'option2BgImg', src: 'statics/game/ninjajump/button2.png' },
         { id: 'option3BgImg', src: 'statics/game/ninjajump/button3.png' },
-        { id: 'lavaSprites', src: 'statics/game/ninjajump/lava.png' },
-        {
-          id: 'lavaSprite1',
-          src: 'statics/game/ninjajump/lava-separated/lava-01.png'
-        },
-        {
-          id: 'lavaSprite2',
-          src: 'statics/game/ninjajump/lava-separated/lava-02.png'
-        },
-        {
-          id: 'lavaSprite3',
-          src: 'statics/game/ninjajump/lava-separated/lava-03.png'
-        },
-        {
-          id: 'lavaSprite4',
-          src: 'statics/game/ninjajump/lava-separated/lava-04.png'
-        },
-        {
-          id: 'lavaSprite5',
-          src: 'statics/game/ninjajump/lava-separated/lava-05.png'
-        },
-        {
-          id: 'lavaSprite6',
-          src: 'statics/game/ninjajump/lava-separated/lava-06.png'
-        },
-        {
-          id: 'lavaSprite7',
-          src: 'statics/game/ninjajump/lava-separated/lava-07.png'
-        },
-        {
-          id: 'lavaSprite8',
-          src: 'statics/game/ninjajump/lava-separated/lava-08.png'
-        },
-        {
-          id: 'lavaSprite9',
-          src: 'statics/game/ninjajump/lava-separated/lava-09.png'
-        },
-        {
-          id: 'lavaSprite10',
-          src: 'statics/game/ninjajump/lava-separated/lava-10.png'
-        },
-        {
-          id: 'lavaSprite11',
-          src: 'statics/game/ninjajump/lava-separated/lava-11.png'
-        },
-        {
-          id: 'lavaSprite12',
-          src: 'statics/game/ninjajump/lava-separated/lava-12.png'
-        },
-        {
-          id: 'lavaSprite13',
-          src: 'statics/game/ninjajump/lava-separated/lava-13.png'
-        },
-        {
-          id: 'lavaSprite14',
-          src: 'statics/game/ninjajump/lava-separated/lava-14.png'
-        },
-        {
-          id: 'bgWall',
-          src: 'statics/game/ninjajump/bg-wall.png'
-        },
-        {
-          id: 'bgTexture',
-          src: 'statics/game/ninjajump/bg-texture.png'
-        },
         {
           id: 'platformLeft',
           src: 'statics/game/ninjajump/platform-1.png'
@@ -112,6 +45,10 @@ export default {
         {
           id: 'ninja',
           src: 'statics/game/ninjajump/ninja.png'
+        },
+        {
+          id: 'gameBackground',
+          src: 'statics/game/ninjaghostleg/bg.png'
         }
       ]);
       manifest = manifest.concat(this.getImageFromQuestion());
@@ -168,53 +105,6 @@ export default {
         animations: { show: [0, 0] }
       });
 
-      var lavaSingleSpriteSheet = new this.$createjs.SpriteSheet({
-        framerate: 10,
-        images: [this.queue.getResult('lavaSprites')],
-        frames: { width: 1022, height: 560, spacing: 1, margin: 1 },
-        animations: { flow: [0, 13] }
-      });
-
-      var lavaSpriteSheet = new this.$createjs.SpriteSheet({
-        framerate: 10,
-        images: [
-          this.queue.getResult('lavaSprite1'),
-          this.queue.getResult('lavaSprite2'),
-          this.queue.getResult('lavaSprite3'),
-          this.queue.getResult('lavaSprite4'),
-          this.queue.getResult('lavaSprite5'),
-          this.queue.getResult('lavaSprite6'),
-          this.queue.getResult('lavaSprite7'),
-          this.queue.getResult('lavaSprite8'),
-          this.queue.getResult('lavaSprite9'),
-          this.queue.getResult('lavaSprite10'),
-          this.queue.getResult('lavaSprite11'),
-          this.queue.getResult('lavaSprite12'),
-          this.queue.getResult('lavaSprite13'),
-          this.queue.getResult('lavaSprite14')
-        ],
-        frames: { width: 1024, height: 560 },
-        animations: { flow: [0, 13] }
-      });
-
-      var bgWallSpriteSheet = new this.$createjs.SpriteSheet({
-        framerate: 10,
-        images: [this.queue.getResult('bgWall')],
-        frames: { width: 1024, height: 1668 },
-        animations: { show: [0, 0] }
-      });
-
-      var bgTextureSpriteSheet = new this.$createjs.SpriteSheet({
-        framerate: 10,
-        images: [this.queue.getResult('bgTexture')],
-        frames: { width: 1024, height: 1668 },
-        animations: { show: [0, 0] }
-      });
-
-      this.lava = new this.$createjs.Sprite(lavaSpriteSheet, 'float');
-      this.bgWall = new this.$createjs.Sprite(bgWallSpriteSheet, 'show');
-      this.bgTexture = new this.$createjs.Sprite(bgTextureSpriteSheet, 'show');
-
       this.platformLeft = new this.$createjs.Sprite(
         this.platformLeftSpriteSheet,
         'platformLeft'
@@ -260,11 +150,9 @@ export default {
     },
     restart() {
       this.ninjaIsDead = false;
-      this.ninjaIsMoving = false;
       if (this.answerBoxLeft) this.answerBoxLeft.visible = true;
       if (this.answerBoxMiddle) this.answerBoxMiddle.visible = true;
       if (this.answerBoxRight) this.answerBoxRight.visible = true;
-      this.startTimer();
       this.scene.removeAllChildren();
 
       this.ninja.removeAllEventListeners();
@@ -288,10 +176,6 @@ export default {
         this.defaultCanvasWidth / 3 - 50,
         this.defaultCanvasHeight - 250
       );
-
-      this.lava.setTransform(0, 850);
-      this.bgWall.setTransform(0, 0);
-      this.bgTexture.setTransform(0, 0);
 
       this.ninja.setTransform(
         this.defaultCanvasWidth / 3,
@@ -322,9 +206,6 @@ export default {
       this.ninja.gotoAndPlay('preJump');
 
       this.scene.addChild(
-        this.bgTexture,
-        this.lava,
-        this.bgWall,
         this.platformLeft,
         this.platformMiddle,
         this.platformRight,
@@ -437,7 +318,6 @@ export default {
           this.answerBoxRight.visible = true;
 
           this.nextQuestion();
-          this.ninjaIsMoving = false;
         });
       }
     },
@@ -551,7 +431,6 @@ export default {
       _container.addEventListener('click', event => {
         if (this.gameReady && this.userInteraction) {
           this.userInteraction = false;
-          this.ninjaIsMoving = true;
           this.jumpToPlatform(
             index,
             this.noOfLifeRemained <= 1 && !event.target.parent.correct
@@ -638,7 +517,6 @@ export default {
     },
     tick(event) {
       var deltaS = event.delta / 1000;
-      if (!this.ninjaIsMoving) this.updateTimer();
       this.stage.update(event);
     },
     showAnswerArea() {
