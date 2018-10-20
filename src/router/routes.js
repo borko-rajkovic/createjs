@@ -4,6 +4,10 @@ export default [
     component: () => import('pages/ninjaRiverJump')
   },
   {
+    path: '/ninja-ghost-leg',
+    component: () => import('pages/ninjaGhostLeg')
+  },
+  {
     path: '/ninja-lava-jump',
     component: () => import('pages/ninjaLavaJump')
   },

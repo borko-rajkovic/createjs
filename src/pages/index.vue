@@ -14,7 +14,7 @@ export default {
   methods: {
   },
   mounted () {
-    this.$router.push('/ninja-river-jump')
+    this.$router.push('/ninja-ghost-leg')
   }
 }
 </script>

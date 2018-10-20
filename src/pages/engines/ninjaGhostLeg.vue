@@ -7,7 +7,7 @@
 <script>
 import GameShellMixin from '../../library/mixins/gameShell';
 export default {
-  name: 'ninja-lava-jump-game-engine',
+  name: 'ninja-ghost-leg-game-engine',
   mixins: [GameShellMixin],
   data() {
     return {
