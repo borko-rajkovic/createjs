@@ -137,13 +137,25 @@ export default {
 
       this.ninja.gotoAndPlay('stand');
 
+      var shape = new this.$createjs.Shape();
+      var g = shape.graphics;
+      g.beginStroke("#000000");
+      g.moveTo(this.ninja.x + 142/2, this.ninja.y + 144+10);
+      g.lineTo(this.ninja.x + 142/2, this.answerBoxLeft.y-10);
+
+      console.log(this.ninja.x + 142/2, this.ninja.y + 144+10);
+      console.log(this.ninja.x + 142/2, this.answerBoxLeft.y-10);
+      
+      // 390; 10 pieces of paths; each 39x39
+
       this.scene.addChild(
         this.ninja,
         this.ninjaMiddle,
         this.ninjaRight,
         this.answerBoxLeft,
         this.answerBoxMiddle,
-        this.answerBoxRight
+        this.answerBoxRight,
+        shape
       );
 
       this.ninjaX = this.ninja.x;
