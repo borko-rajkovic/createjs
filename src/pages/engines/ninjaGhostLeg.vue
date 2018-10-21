@@ -37,10 +37,45 @@ export default {
         {
           id: 'gameBackground',
           src: 'statics/game/ninjaghostleg/bg.png'
+        },
+        {
+          id: 'pathEnd',
+          src: 'statics/game/ninjaghostleg/path/end.png'
+        },
+        {
+          id: 'pathLeft',
+          src: 'statics/game/ninjaghostleg/path/left.png'
+        },
+        {
+          id: 'pathMid',
+          src: 'statics/game/ninjaghostleg/path/mid.png'
+        },
+        {
+          id: 'pathMidLeft',
+          src: 'statics/game/ninjaghostleg/path/mid-left.png'
+        },
+        {
+          id: 'pathMidRight',
+          src: 'statics/game/ninjaghostleg/path/mid-right.png'
+        },
+        {
+          id: 'pathRight',
+          src: 'statics/game/ninjaghostleg/path/right.png'
+        },
+        {
+          id: 'pathStart',
+          src: 'statics/game/ninjaghostleg/path/start.png'
+        },
+        {
+          id: 'pathTurnMid',
+          src: 'statics/game/ninjaghostleg/path/turn-mid.png'
         }
       ]);
       manifest = manifest.concat(this.getImageFromQuestion());
       this.queue.loadManifest(manifest);
+    },
+    createPathPiece(name){
+      return new this.$createjs.Bitmap(this.queue.getResult(name));
     },
     handleComplete() {
       this.initGameValues();
@@ -102,6 +137,35 @@ export default {
       this.gameStart();
       this.setAnswerBox();
     },
+    drawPath(ninja, pieces){
+      let pieceY = ninja.y+144;
+      let xOffset = ninja.x + 51;
+
+      for (let i = 0; i < pieces.length; i++) {
+        let piece;
+        piece = this.createPathPiece(pieces[i]);
+        piece.setTransform(xOffset, pieceY);
+        this.scene.addChild(piece);
+        if (pieces[i]=='pathMidRight'){
+          let xOffsetMiddle = xOffset;
+          const moveMiddleBy = pieces[i] == 'pathMidLeft' ? -39 : +39;
+          const firstMiddlePiece = pieces[i] == 'pathMidLeft' ? 'pathLeft' : 'pathRight';
+          for (let i = 0; i < 5; i++) {
+            xOffsetMiddle += moveMiddleBy;
+            let pieceMiddle;
+            if (i==0){
+              pieceMiddle = this.createPathPiece(firstMiddlePiece);
+            }
+            else {
+              pieceMiddle = this.createPathPiece('pathTurnMid');
+            }
+            pieceMiddle.setTransform(xOffsetMiddle, pieceY);
+            this.scene.addChild(pieceMiddle);
+          }
+        }
+        pieceY += 39;
+      }
+    },
     restart() {
       this.ninjaIsDead = false;
       this.scene.removeAllChildren();
@@ -140,13 +204,44 @@ export default {
       var shape = new this.$createjs.Shape();
       var g = shape.graphics;
       g.beginStroke("#000000");
-      g.moveTo(this.ninja.x + 142/2, this.ninja.y + 144+10);
-      g.lineTo(this.ninja.x + 142/2, this.answerBoxLeft.y-10);
+      g.moveTo(this.ninjaMiddle.x + 142/2, this.ninjaMiddle.y + 144);
+      g.lineTo(this.ninjaMiddle.x + 142/2, this.answerBoxMiddle.y);
 
-      console.log(this.ninja.x + 142/2, this.ninja.y + 144+10);
-      console.log(this.ninja.x + 142/2, this.answerBoxLeft.y-10);
-      
-      // 390; 10 pieces of paths; each 39x39
+      this.pieces = [];
+      this.pathCodes = [];
+      for (let i=0; i<3; i++){
+        this.pieces.push([]);
+        this.pieces[i].push('pathStart');
+      }
+      for(var i = 0; i < 9; i++){
+        const pathCode =  Math.floor(Math.random() * Math.floor(4));
+        this.pathCodes.push(pathCode);
+
+        switch (pathCode) {
+          case 0:
+            this.pieces[0].push('pathMidRight');
+            this.pieces[1].push('pathMidLeft');
+            this.pieces[2].push('pathMid');
+            break;
+          case 1:
+            this.pieces[0].push('pathMid');
+            this.pieces[1].push('pathMidRight');
+            this.pieces[2].push('pathMidLeft');
+            break;
+          default:
+            this.pieces[0].push('pathMid');
+            this.pieces[1].push('pathMid');
+            this.pieces[2].push('pathMid');
+            break;
+        }
+      }
+      for (let i=0; i<3; i++){
+        this.pieces[i].push('pathEnd');
+      }
+
+      this.drawPath(this.ninja, this.pieces[0]);
+      this.drawPath(this.ninjaMiddle, this.pieces[1]);
+      this.drawPath(this.ninjaRight, this.pieces[2]);
 
       this.scene.addChild(
         this.ninja,
@@ -154,8 +249,7 @@ export default {
         this.ninjaRight,
         this.answerBoxLeft,
         this.answerBoxMiddle,
-        this.answerBoxRight,
-        shape
+        this.answerBoxRight
       );
 
       this.ninjaX = this.ninja.x;
