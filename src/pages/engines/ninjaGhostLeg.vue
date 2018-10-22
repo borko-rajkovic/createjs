@@ -74,7 +74,7 @@ export default {
       manifest = manifest.concat(this.getImageFromQuestion());
       this.queue.loadManifest(manifest);
     },
-    createPathPiece(name){
+    createPathPiece(name) {
       return new this.$createjs.Bitmap(this.queue.getResult(name));
     },
     handleComplete() {
@@ -137,8 +137,8 @@ export default {
       this.gameStart();
       this.setAnswerBox();
     },
-    drawPath(ninja, pieces){
-      let pieceY = ninja.y+144;
+    drawPath(ninja, pieces) {
+      let pieceY = ninja.y + 144;
       let xOffset = ninja.x + 51;
 
       for (let i = 0; i < pieces.length; i++) {
@@ -146,17 +146,17 @@ export default {
         piece = this.createPathPiece(pieces[i]);
         piece.setTransform(xOffset, pieceY);
         this.scene.addChild(piece);
-        if (pieces[i]=='pathMidRight'){
+        if (pieces[i] == 'pathMidRight') {
           let xOffsetMiddle = xOffset;
           const moveMiddleBy = pieces[i] == 'pathMidLeft' ? -39 : +39;
-          const firstMiddlePiece = pieces[i] == 'pathMidLeft' ? 'pathLeft' : 'pathRight';
+          const firstMiddlePiece =
+            pieces[i] == 'pathMidLeft' ? 'pathLeft' : 'pathRight';
           for (let i = 0; i < 5; i++) {
             xOffsetMiddle += moveMiddleBy;
             let pieceMiddle;
-            if (i==0){
+            if (i == 0) {
               pieceMiddle = this.createPathPiece(firstMiddlePiece);
-            }
-            else {
+            } else {
               pieceMiddle = this.createPathPiece('pathTurnMid');
             }
             pieceMiddle.setTransform(xOffsetMiddle, pieceY);
@@ -170,25 +170,11 @@ export default {
       this.ninjaIsDead = false;
       this.scene.removeAllChildren();
 
-      this.ninja.removeAllEventListeners();
-      this.ninja.addEventListener('animationend', event => {
-        this.handleAnimationEnd();
-      });
+      this.ninja.setTransform(220 - 13, 250);
 
-      this.ninja.setTransform(
-        220 - 13,
-        250
-      );
+      this.ninjaMiddle.setTransform(450 - 13, 250);
 
-      this.ninjaMiddle.setTransform(
-        450 - 13,
-        250
-      );
-
-      this.ninjaRight.setTransform(
-        680 - 13,
-        250
-      );
+      this.ninjaRight.setTransform(680 - 13, 250);
 
       this.ninjaXOrigin = this.ninja.x;
       this.ninjaYOrigin = this.ninja.y;
@@ -203,18 +189,18 @@ export default {
 
       var shape = new this.$createjs.Shape();
       var g = shape.graphics;
-      g.beginStroke("#000000");
-      g.moveTo(this.ninjaMiddle.x + 142/2, this.ninjaMiddle.y + 144);
-      g.lineTo(this.ninjaMiddle.x + 142/2, this.answerBoxMiddle.y);
+      g.beginStroke('#000000');
+      g.moveTo(this.ninjaMiddle.x + 142 / 2, this.ninjaMiddle.y + 144);
+      g.lineTo(this.ninjaMiddle.x + 142 / 2, this.answerBoxMiddle.y);
 
       this.pieces = [];
       this.pathCodes = [];
-      for (let i=0; i<3; i++){
+      for (let i = 0; i < 3; i++) {
         this.pieces.push([]);
         this.pieces[i].push('pathStart');
       }
-      for(var i = 0; i < 9; i++){
-        const pathCode =  Math.floor(Math.random() * Math.floor(4));
+      for (var i = 0; i < 9; i++) {
+        const pathCode = Math.floor(Math.random() * Math.floor(4));
         this.pathCodes.push(pathCode);
 
         switch (pathCode) {
@@ -235,7 +221,7 @@ export default {
             break;
         }
       }
-      for (let i=0; i<3; i++){
+      for (let i = 0; i < 3; i++) {
         this.pieces[i].push('pathEnd');
       }
 
@@ -254,28 +240,6 @@ export default {
 
       this.ninjaX = this.ninja.x;
       this.ninjaY = this.ninja.y;
-    },
-    handleAnimationEnd() {
-      if (
-        this.ninja.currentAnimation === 'success' &&
-        this.ninjaIsDead === true
-      ) {
-        this.deduceLife();
-      }
-
-      if (
-        this.ninja.currentAnimation === 'success' &&
-        this.ninjaShouldContinue === true &&
-        this.ninjaIsDead === false
-      ) {
-        this.ninjaShouldContinue === false;
-
-        this.$createjs.Tween.get(this.ninja).to(
-          { x: this.ninjaXOrigin, y: this.ninjaYOrigin },
-          1500,
-          createjs.Ease.circOut
-        );
-      }
     },
     setAnswerBox() {
       this.answerBoxTextLeft = new this.$createjs.Text(
@@ -387,58 +351,97 @@ export default {
       _container.addEventListener('click', event => {
         if (this.gameReady && this.userInteraction) {
           this.userInteraction = false;
-          this.jumpToPlatform(
+          this.moveSelectedNinja(
             index,
             this.noOfLifeRemained <= 1 && !event.target.parent.correct
           );
-          if (event.target.parent.correct) {
-            this.addScore();
-          } else {
-            if (this.noOfLifeRemained > 1) this.deduceLife();
-          }
         }
       });
       this.stage.addChild(_container);
     },
-    jumpToPlatform(index, gameLost) {
+    moveSelectedNinjaCompleted(pieceIndex, ninjaToMove, $createjs, callback, ninjaIndex, pieces, changed, addScore, deduceLife, nextQuestion) {
+      return function() {
+        if (pieceIndex < 10) {
+          if (pieces[ninjaIndex][pieceIndex]==='pathMid'||pieces[ninjaIndex][pieceIndex]==='pathStart'||changed==true){
+
+            if (changed){
+              ninjaToMove.gotoAndPlay('moveStraight');
+            }
+
+            var move = $createjs.Tween.get(ninjaToMove).to(
+              { x: ninjaToMove.x, y: ninjaToMove.y + 39 },
+              200
+            );
+
+            move.addEventListener(
+              'complete',
+              callback(pieceIndex+1, ninjaToMove, $createjs, callback, ninjaIndex, pieces, false, addScore, deduceLife, nextQuestion)
+            );
+          }
+          else {
+            var play = pieces[ninjaIndex][pieceIndex]==='pathMidRight'?'moveRight':'moveLeft';
+            ninjaToMove.gotoAndPlay(play);
+            var offset;
+            var newNinjaIndex;
+            if (play==='moveRight'){
+              offset = 230;
+              newNinjaIndex=ninjaIndex+1;
+            } else {
+              offset = -230;
+              newNinjaIndex=ninjaIndex-1;
+            }
+            var move = $createjs.Tween.get(ninjaToMove).to(
+              { x: ninjaToMove.x+offset, y: ninjaToMove.y },
+              1000
+            );
+
+            move.addEventListener(
+              'complete',
+              callback(pieceIndex, ninjaToMove, $createjs, callback, newNinjaIndex, pieces, true, addScore, deduceLife, nextQuestion)
+            );
+          }
+        } else {
+          // TODO check for correct answer
+          const result = ninjaIndex===1?'success':'failure';
+          if (result == 'success') addScore();
+          else {
+            deduceLife();
+          }
+          ninjaToMove.gotoAndPlay(result);
+          setTimeout(()=>{
+            ninjaToMove.gotoAndPlay('stand')
+            nextQuestion();
+            }, 1500);
+        }
+      };
+    },
+    moveSelectedNinja(index, gameLost) {
       this.selectedIndex = index;
+
+      let ninjaToMove;
 
       switch (index) {
         case 0:
-          this.ninja.gotoAndPlay('moveLeft');
-          this.ninjaX = 300;
-          this.ninjaY = 300;
+          ninjaToMove = this.ninja;
           break;
         case 1:
-          this.ninja.gotoAndPlay('moveStraight');
-          this.ninjaX = 400;
-          this.ninjaY = 400;
+          ninjaToMove = this.ninjaMiddle;
           break;
         case 2:
-          this.ninja.gotoAndPlay('moveRight');
-          this.ninjaX = 500;
-          this.ninjaY = 500;
-          break;
-        default:
+          ninjaToMove = this.ninjaRight;
           break;
       }
 
-      let moveToPlatform = this.$createjs.Tween.get(this.ninja).to(
-        { x: this.ninjaX, y: this.ninjaY },
-        500,
-        createjs.Ease.circOut
+      ninjaToMove.gotoAndPlay('moveStraight');
+      var moveToStart = this.$createjs.Tween.get(ninjaToMove).to(
+        { x: ninjaToMove.x, y: ninjaToMove.y + 39 },
+        200
       );
 
-      moveToPlatform.addEventListener('complete', () => {
-        console.log('Complete tween');
-        this.ninja.gotoAndPlay('success');
-        if (!gameLost) {
-          this.clearAnswerBox();
-          this.ninjaContinues(index);
-        } else {
-          this.ninjaDies(index);
-        }
-      });
+      moveToStart.addEventListener(
+        'complete',
+        this.moveSelectedNinjaCompleted(0, ninjaToMove, this.$createjs, this.moveSelectedNinjaCompleted, index, this.pieces, false,this.addScore, this.deduceLife, this.nextQuestion)
+      );
     },
     ninjaContinues(index) {
       this.ninjaShouldContinue = true;
