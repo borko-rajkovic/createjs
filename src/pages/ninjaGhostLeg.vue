@@ -5,7 +5,7 @@
 <script>
 import NinjaGhostLegGameEngine from './engines/ninjaGhostLeg';
 export default {
-  name: 'ninja-lava-jump',
+  name: 'ninja-ghost-leg',
   components: {
     NinjaGhostLegGameEngine
   },
@@ -25,8 +25,8 @@ export default {
           correctAnswer: 6,
           distractors: [7, 5],
           options: [
-            { value: 7, valueType: 'text', correct: false },
             { value: 6, valueType: 'text', correct: true },
+            { value: 7, valueType: 'text', correct: false },
             { value: 5, valueType: 'text', correct: false }
           ]
         },

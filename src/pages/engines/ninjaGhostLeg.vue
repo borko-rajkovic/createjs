@@ -31,8 +31,16 @@ export default {
           src: 'statics/game/ninjaghostleg/answer-box.png'
         },
         {
-          id: 'ninja',
-          src: 'statics/game/ninjaghostleg/ninja.png'
+          id: 'ninjagreen',
+          src: 'statics/game/ninjaghostleg/ninjagreen.png'
+        },
+        {
+          id: 'ninjablue',
+          src: 'statics/game/ninjaghostleg/ninjablue.png'
+        },
+        {
+          id: 'ninjapurple',
+          src: 'statics/game/ninjaghostleg/ninjapurple.png'
         },
         {
           id: 'gameBackground',
@@ -88,9 +96,37 @@ export default {
       this.createOptionContainer(1, 'option2BgImg');
       this.createOptionContainer(2, 'option3BgImg');
 
-      var ninjaSpriteSheet = new this.$createjs.SpriteSheet({
+      var ninjaBlueSpriteSheet = new this.$createjs.SpriteSheet({
         framerate: 10,
-        images: [this.queue.getResult('ninja')],
+        images: [this.queue.getResult('ninjablue')],
+        frames: { width: 142, height: 144, count: 10 },
+        animations: {
+          stand: [0, 0],
+          moveStraight: [1, 2, 'moveStraight', 0.4],
+          moveRight: [3, 4, 'moveRight', 0.4],
+          moveLeft: [5, 6, 'moveLeft', 0.4],
+          success: [7, 7],
+          failure: [8, 8]
+        }
+      });
+
+      var ninjaPurpleSpriteSheet = new this.$createjs.SpriteSheet({
+        framerate: 10,
+        images: [this.queue.getResult('ninjapurple')],
+        frames: { width: 142, height: 144, count: 10 },
+        animations: {
+          stand: [0, 0],
+          moveStraight: [1, 2, 'moveStraight', 0.4],
+          moveRight: [3, 4, 'moveRight', 0.4],
+          moveLeft: [5, 6, 'moveLeft', 0.4],
+          success: [7, 7],
+          failure: [8, 8]
+        }
+      });
+
+      var ninjaGreenSpriteSheet = new this.$createjs.SpriteSheet({
+        framerate: 10,
+        images: [this.queue.getResult('ninjagreen')],
         frames: { width: 142, height: 144, count: 10 },
         animations: {
           stand: [0, 0],
@@ -122,9 +158,9 @@ export default {
         'show'
       );
 
-      this.ninja = new this.$createjs.Sprite(ninjaSpriteSheet, 'stand');
-      this.ninjaMiddle = new this.$createjs.Sprite(ninjaSpriteSheet, 'stand');
-      this.ninjaRight = new this.$createjs.Sprite(ninjaSpriteSheet, 'stand');
+      this.ninja = new this.$createjs.Sprite(ninjaGreenSpriteSheet, 'stand');
+      this.ninjaMiddle = new this.$createjs.Sprite(ninjaBlueSpriteSheet, 'stand');
+      this.ninjaRight = new this.$createjs.Sprite(ninjaPurpleSpriteSheet, 'stand');
 
       this.scene = new this.$createjs.Container();
 
@@ -359,7 +395,7 @@ export default {
       });
       this.stage.addChild(_container);
     },
-    moveSelectedNinjaCompleted(pieceIndex, ninjaToMove, $createjs, callback, ninjaIndex, pieces, changed, addScore, deduceLife, nextQuestion) {
+    moveSelectedNinjaCompleted(pieceIndex, ninjaToMove, $createjs, callback, ninjaIndex, pieces, changed, addScore, deduceLife, nextQuestion, getCurrentOption) {
       return function() {
         if (pieceIndex < 10) {
           if (pieces[ninjaIndex][pieceIndex]==='pathMid'||pieces[ninjaIndex][pieceIndex]==='pathStart'||changed==true){
@@ -375,7 +411,7 @@ export default {
 
             move.addEventListener(
               'complete',
-              callback(pieceIndex+1, ninjaToMove, $createjs, callback, ninjaIndex, pieces, false, addScore, deduceLife, nextQuestion)
+              callback(pieceIndex+1, ninjaToMove, $createjs, callback, ninjaIndex, pieces, false, addScore, deduceLife, nextQuestion, getCurrentOption)
             );
           }
           else {
@@ -397,12 +433,11 @@ export default {
 
             move.addEventListener(
               'complete',
-              callback(pieceIndex, ninjaToMove, $createjs, callback, newNinjaIndex, pieces, true, addScore, deduceLife, nextQuestion)
+              callback(pieceIndex, ninjaToMove, $createjs, callback, newNinjaIndex, pieces, true, addScore, deduceLife, nextQuestion, getCurrentOption)
             );
           }
         } else {
-          // TODO check for correct answer
-          const result = ninjaIndex===1?'success':'failure';
+          const result = getCurrentOption(ninjaIndex).correct ?'success':'failure';
           if (result == 'success') addScore();
           else {
             deduceLife();
@@ -440,7 +475,7 @@ export default {
 
       moveToStart.addEventListener(
         'complete',
-        this.moveSelectedNinjaCompleted(0, ninjaToMove, this.$createjs, this.moveSelectedNinjaCompleted, index, this.pieces, false,this.addScore, this.deduceLife, this.nextQuestion)
+        this.moveSelectedNinjaCompleted(0, ninjaToMove, this.$createjs, this.moveSelectedNinjaCompleted, index, this.pieces, false,this.addScore, this.deduceLife, this.nextQuestion, this.getCurrentOption)
       );
     },
     ninjaContinues(index) {
